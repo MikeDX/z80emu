@@ -12,6 +12,8 @@
 extern "C" {
 #endif
 
+#include <stdint.h>
+
 /* Define or comment the following macros to control the features implemented
  * in the emulator. 
  */
@@ -187,6 +189,13 @@ typedef struct {
 
         int             i, r, pc, iff1, iff2, im;
 
+        uint8_t  *memory;
+
+        uint8_t (*readbyte)(uint16_t);
+        uint16_t (*readword)(uint16_t);
+        void (*writebyte)(uint16_t,uint8_t);
+        void (*writeword)(uint16_t,uint16_t);
+
 } Z80_STATE;
 
 /* Write the following macros for memory access and input/output on the Z80. 
@@ -245,35 +254,32 @@ typedef struct {
 
 #define Z80_FETCH_BYTE(address, x)                                      \
 {                                                                       \
-        (x) = memory[(address) & 0xffff];                               \
+        (x) = state->readbyte(address); \
 }
 
 #define Z80_FETCH_WORD(address, x)                                      \
 {                                                                       \
-        (x) = memory[(address) & 0xffff]                                \
-                | (memory[((address) + 1) & 0xffff] << 8);              \
+        (x) = state->readword((address) & 0xffff);                                \
 }
 
 #define Z80_READ_BYTE(address, x)                                       \
 {                                                                       \
-        (x) = memory[(address) & 0xffff];                               \
+        (x) = state->readbyte(address & 0xffff);   \
 }
 
 #define Z80_WRITE_BYTE(address, x)                                      \
 {                                                                       \
-        memory[(address) & 0xffff] = (x);                               \
+        state->writebyte((address) & 0xffff,x); \
 }
 
 #define Z80_READ_WORD(address, x)                                       \
 {                                                                       \
-        (x) = memory[(address) & 0xffff]                                \
-                | (memory[((address) + 1) & 0xffff] << 8);              \
+        (x) = state->readword((address) & 0xffff); \
 }
 
 #define Z80_WRITE_WORD(address, x)                                      \
 {                                                                       \
-        memory[(address) & 0xffff] = x;                                 \
-        memory[((address) + 1) & 0xffff] = x >> 8;                      \
+        state->writeword((address) & 0xffff, x);   \
 }
 
 #define Z80_INPUT_BYTE(port, x)                                         \

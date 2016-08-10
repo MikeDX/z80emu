@@ -11,9 +11,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "z80emu.h"
+#ifdef EMSCRIPTEN
+#include <emscripten.h>
+#endif
+#include <stdint.h>
+
 
 #define Z80_CPU_SPEED           4000000   /* In Hz. */
+#ifdef EMSCRIPTEN
+#define CYCLES_PER_STEP         (Z80_CPU_SPEED)
+#else
 #define CYCLES_PER_STEP         (Z80_CPU_SPEED / 50)
+#endif
+
 #define MAXIMUM_STRING_LENGTH   100
 
 unsigned char   memory[1 << 16];
@@ -29,14 +39,44 @@ int main (void)
 }
 
 /* Emulate "zexdoc.com" or "zexall.com". */
+Z80_STATE       state;
+double          total;
+int stopped;
+
+void mainloop(void) {
+	total += Z80Emulate(&state, CYCLES_PER_STEP);
+	if (state.status & FLAG_STOP_EMULATION) 
+#ifdef EMSCRIPTEN
+		emscripten_cancel_main_loop();
+#else
+		stopped = 1;
+#endif
+
+}
+
+
+uint8_t readbyte(uint16_t addr) {
+    return memory[addr];
+}
+
+uint16_t readword(uint16_t addr) {
+    return memory[addr]|memory[addr+1]<<8;
+}
+
+void writebyte(uint16_t addr, uint8_t data) {
+    memory[addr]=data;
+}
+
+void writeword(uint16_t addr, uint16_t data) {
+    memory[addr]=data;
+    memory[addr+1]=data>>8;
+}
 
 static void emulate (char *filename)
 
 {
         FILE            *file;
         long            l;
-        Z80_STATE       state;
-        double          total;
 
         printf("Testing \"%s\"...\n", filename);
 
@@ -55,6 +95,13 @@ static void emulate (char *filename)
 
         fclose(file);
 
+        // Give this CPU some RAM
+        state.memory = memory;
+        state.readbyte = readbyte;
+        state.readword = readword;
+        state.writeword = writeword;
+        state.writebyte = writebyte;
+
         /* Patch memory of the program. Reset at 0x0000 is trapped by an OUT
          * which will stop emulation. CP/M bdos call 5 is trapped by an IN. See
          * Z80_INPUT_BYTE() and Z80_OUTPUT_BYTE() definitions in z80emu.h.
@@ -72,14 +119,17 @@ static void emulate (char *filename)
         Z80Reset(&state);
         state.pc = 0x100;
         total = 0.0;
+#ifndef EMSCRIPTEN
+		stopped = 0;
         for ( ; ; ) {
-
-                total += Z80Emulate(&state, CYCLES_PER_STEP);
-                if (state.status & FLAG_STOP_EMULATION) 
-
-                        break;
-
+			mainloop();
+			if(stopped == 1)
+				break;
         }
+#else
+		emscripten_set_main_loop(mainloop,0,1);
+#endif
+
         printf("\n%.0f cycle(s) emulated.\n" 
                 "For a Z80 running at %.2fMHz, "
                 "that would be %d second(s) or %.2f hour(s).\n",
