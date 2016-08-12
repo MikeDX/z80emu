@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "z80emu.h"
+#include <SDL.h>
 #ifdef EMSCRIPTEN
 #include <emscripten.h>
 #endif
@@ -28,5 +29,11 @@
 #define CYCLES_PER_STEP         (Z80_CPU_SPEED / 50)
 
 GLOBAL uint8_t *zxmem;
+
+GLOBAL SDL_Surface *screen;
+
+
+extern int ZX_SetPalette(void);
+extern void ZX_Draw(void);
 
 #endif

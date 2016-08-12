@@ -48,7 +48,10 @@ $(OBJDIR)/z80emu.o: z80emu.c z80emu.h instructions.h macros.h tables.h
 $(OBJDIR)/zxem.o: zxem.c zxem.h z80emu.h
 	$(CC) $(CFLAGS) $(OLEVEL) $(SDLFLAGS) -Wall -c $< -o $@
 
-OBJECT_FILES = $(OBJDIR)/zxem.o $(OBJDIR)/z80emu.o
+$(OBJDIR)/zxvid.o: zxvid.c zxem.h
+	$(CC) $(CFLAGS) $(OLEVEL) $(SDLFLAGS) -Wall -c $< -o $@
+
+OBJECT_FILES = $(OBJDIR)/zxem.o $(OBJDIR)/z80emu.o $(OBJDIR)/zxvid.o
 
 $(TARGET): $(OBJECT_FILES)
 	$(CC) $(CFLAGS) $(SDLLIBS) $(OBJECT_FILES) $(LINKFLAGS) -o $@

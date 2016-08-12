@@ -95,7 +95,7 @@ static void emulate (char *filename)
 
         fclose(file);
 
-        // Give this CPU some RAM
+        /* Give this CPU some RAM */
         state.memory = memory;
         state.readbyte = readbyte;
         state.readword = readword;
