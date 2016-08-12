@@ -20,12 +20,13 @@
 // macro for global vars
 #ifndef GLOBALS
 #define GLOBAL extern
+#else
+#define GLOBAL
 #endif
 
 #define Z80_CPU_SPEED           4000000   /* In Hz. */
 #define CYCLES_PER_STEP         (Z80_CPU_SPEED / 50)
 
-
-
+GLOBAL uint8_t *zxmem;
 
 #endif

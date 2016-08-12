@@ -1,7 +1,9 @@
 OLEVEL = -O3 
-CFLAGS = -Wall -ansi -pedantic $(OLEVEL) -fomit-frame-pointer
+CFLAGS = -Wall -std=gnu99 -pedantic $(OLEVEL) -fomit-frame-pointer
+SDLFLAGS = $(shell sdl-config --cflags)
+SDLLIBS = $(shell sdl-config --libs)
 CC = gcc
-TARGET = zextest
+TARGET = zxem
 OBJDIR = obj
 ifndef PLAT
 PLAT = NATIVE
@@ -14,17 +16,19 @@ endif
 
 ifeq ($(PLAT), HTML)
 CC = emcc
+SDLFLAGS = -s USE_SDL=1
 OLEVEL += -s ASM_JS=1 
-LINKFLAGS = $(OLEVEL) --preload-files testfiles/ --emrun
-TARGET = zextest.html
+LINKFLAGS = $(OLEVEL) --preload-files roms/ --emrun
+TARGET := $(TARGET).html
 OBJDIR = objhtml
 endif
 
 ifeq ($(PLAT), JS)
 CC = emcc
+SDLFLAGS = -s USE_SDL=1
 OLEVEL += -s ASM_JS=1 
-LINKFLAGS = $(OLEVEL) --embed-files testfiles/ --emrun
-TARGET = zextest.js
+LINKFLAGS = $(OLEVEL) --embed-files roms/ --emrun
+TARGET := $(TARGET).js
 OBJDIR = objjs
 endif
 
@@ -39,15 +43,15 @@ tables.h: maketables.c
 	./maketables > $@
 
 $(OBJDIR)/z80emu.o: z80emu.c z80emu.h instructions.h macros.h tables.h
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(OLEVEL) -c $< -o $@
 
-$(OBJDIR)/zextest.o: zextest.c z80emu.h
-	$(CC) $(CFLAGS) -Wall -c $< -o $@
+$(OBJDIR)/zxem.o: zxem.c zxem.h z80emu.h
+	$(CC) $(CFLAGS) $(OLEVEL) $(SDLFLAGS) -Wall -c $< -o $@
 
-OBJECT_FILES = $(OBJDIR)/zextest.o $(OBJDIR)/z80emu.o
+OBJECT_FILES = $(OBJDIR)/zxem.o $(OBJDIR)/z80emu.o
 
 $(TARGET): $(OBJECT_FILES)
-	$(CC) $(CFLAGS) $(OBJECT_FILES) $(LINKFLAGS) -o $@
+	$(CC) $(CFLAGS) $(SDLLIBS) $(OBJECT_FILES) $(LINKFLAGS) -o $@
 
 clean: 
 	rm *.o 

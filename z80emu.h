@@ -174,7 +174,7 @@ enum {
 
 /* Z80 processor's state, you may add additionnal members as necessary. */
 
-typedef struct {
+typedef struct Z80_STATE_ {
 
         int             status;
                                 
@@ -195,6 +195,7 @@ typedef struct {
         uint16_t (*readword)(uint16_t);
         void (*writebyte)(uint16_t,uint8_t);
         void (*writeword)(uint16_t,uint16_t);
+        void (*input)(struct Z80_STATE_ *state);
 
 } Z80_STATE;
 
@@ -285,7 +286,7 @@ typedef struct {
 #define Z80_INPUT_BYTE(port, x)                                         \
 {                                                                       \
         (x) = 0;                /* Make compiler happy. */              \
-        SystemCall(state);                                              \
+        state->input(state);                                              \
 }
 
 #define Z80_OUTPUT_BYTE(port, x)                                        \
