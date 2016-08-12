@@ -13,18 +13,18 @@ ZXEMU is a free open source cross platform ZX Spectrum emulator, currently work 
 
 
 ## Features
-[X] Working Z80 CPU Core  
-[X] Windows port  
-[X] OSX port  
-[X] Linux  
-[X] Android port  
-[X] Html/Javascript port  
-[X] Raspberry Pi port  
-[ ] Spectrum 48k support  
-[ ] Spectrum 128K support  
-[ ] AY-3-8912 emulation  
-[ ] Configurable gamepad  
-[ ] TZX Support  
-[ ] Z80 Snapshot support  
+- [x] Working Z80 CPU Core  
+- [x] Windows port  
+- [x] OSX port  
+- [x] Linux  
+- [x] Android port  
+- [x] Html/Javascript port  
+- [x] Raspberry Pi port  
+- [ ] Spectrum 48k support  
+- [ ] Spectrum 128K support  
+- [ ] AY-3-8912 emulation  
+- [ ] Configurable gamepad  
+- [ ] TZX Support  
+- [ ] Z80 Snapshot support  
 
 Please help to test and develop this project!
