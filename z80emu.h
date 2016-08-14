@@ -195,7 +195,7 @@ typedef struct Z80_STATE_ {
         uint16_t (*readword)(uint16_t);
         void (*writebyte)(uint16_t,uint8_t);
         void (*writeword)(uint16_t,uint16_t);
-        void (*input)(struct Z80_STATE_ *state);
+        uint8_t (*input)(uint16_t);
 
 } Z80_STATE;
 
@@ -286,14 +286,14 @@ typedef struct Z80_STATE_ {
 #define Z80_INPUT_BYTE(port, x)                                         \
 {                                                                       \
         (x) = 0;                /* Make compiler happy. */              \
-        state->input(state);                                              \
+        x = state->input(port);                                              \
 }
 
 #define Z80_OUTPUT_BYTE(port, x)                                        \
-{                                                                       \
-        number_cycles = 0;                                              \
-        state->status |= FLAG_STOP_EMULATION;                           \
-}
+{ }                                                                      \
+//        number_cycles = 0;                                              \
+//        state->status |= FLAG_STOP_EMULATION;                           \
+//}
 
 /* See comments in z80emu.c for a description of each functions. */
 

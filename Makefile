@@ -17,21 +17,12 @@ endif
 ifeq ($(PLAT), HTML)
 CC = emcc
 SDLFLAGS = -s USE_SDL=1
+SDLLIBS = -lSDL
 OLEVEL += -s ASM_JS=1 
-LINKFLAGS = $(OLEVEL) --preload-files roms/ --emrun
+LINKFLAGS = $(OLEVEL) --preload-files roms/ --preload-files scr/ --emrun
 TARGET := $(TARGET).html
 OBJDIR = objhtml
 endif
-
-ifeq ($(PLAT), JS)
-CC = emcc
-SDLFLAGS = -s USE_SDL=1
-OLEVEL += -s ASM_JS=1 
-LINKFLAGS = $(OLEVEL) --embed-files roms/ --emrun
-TARGET := $(TARGET).js
-OBJDIR = objjs
-endif
-
 
 all: $(OBJDIR) $(TARGET)
 
@@ -51,7 +42,10 @@ $(OBJDIR)/zxem.o: zxem.c zxem.h z80emu.h
 $(OBJDIR)/zxvid.o: zxvid.c zxem.h
 	$(CC) $(CFLAGS) $(OLEVEL) $(SDLFLAGS) -Wall -c $< -o $@
 
-OBJECT_FILES = $(OBJDIR)/zxem.o $(OBJDIR)/z80emu.o $(OBJDIR)/zxvid.o
+$(OBJDIR)/zxio.o: zxio.c zxem.h
+	$(CC) $(CFLAGS) $(OLEVEL) $(SDLFLAGS) -Wall -c $< -o $@
+
+OBJECT_FILES = $(OBJDIR)/zxem.o $(OBJDIR)/z80emu.o $(OBJDIR)/zxvid.o $(OBJDIR)/zxio.o
 
 $(TARGET): $(OBJECT_FILES)
 	$(CC) $(CFLAGS) $(SDLLIBS) $(OBJECT_FILES) $(LINKFLAGS) -o $@

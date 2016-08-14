@@ -16,7 +16,54 @@ Z80_STATE zxcpu;
 double          total;
 int stopped;
 
+FILE *scrf;
+int scri=0;
 
+void scrloop(void) {
+	if(!feof(scrf)) {
+		fread(&zxmem[16384+scri],1,1,scrf);
+		cached[16384+scri]=1;
+		scri++;
+		if(!(scri&0xF)) {
+			ZX_Draw();
+	//		return;
+		}
+	}
+}
+
+int ZX_LoadSCR(char *path) {
+	FILE *f;
+	int i = 0;
+	int j = 0;
+	
+	while(1) {
+	
+	for(i=0;i<10;i++) {
+		memset(&cached[16384],1,6912);
+		for(j=0;j<6912;j++) {
+			zxmem[16384+j]=rand()%256;
+		}
+		ZX_Draw();
+	}
+	memset(&zxmem[16384+6144],rand()%256/*64+7*/,32*24);
+	if(!(f=fopen(path,"r"))) {
+		printf("Failed to open screen\n");
+		return -1;
+	}
+	scri=0;
+	scrf=f;
+#ifndef EMSCRIPTEN
+	while(!feof(f)) {
+		scrloop();
+	}
+	fclose(f);
+#else
+	emscripten_set_main_loop(scrloop,0,1);
+#endif	
+	}
+	return 1;
+
+}
 int ZX_LoadROM(void) {
 	/* Load ZX Spectrum ROM into lower 16K mem */
 	FILE *f;
@@ -33,35 +80,23 @@ int ZX_LoadROM(void) {
 
 void ZX_End(void) {
 	free(zxmem);
+	free(cached);
+	free(screenbuf);
 	SDL_Quit();
 }
 
 
-uint8_t readbyte(uint16_t addr) {
-    return zxmem[addr];
+/* Handle Interrupt - called before each screen render */
+void ZX_Int(void) {
+	Z80Emulate(&zxcpu, Z80Interrupt(&zxcpu,0xFF));
 }
 
-uint16_t readword(uint16_t addr) {
-    return zxmem[addr] | zxmem[addr+1]<<8;
-}
 
-void writebyte(uint16_t addr, uint8_t data) {
-
-	/* Don't allow writing to ROM */
-	if(addr>=0x4000) {
-	    zxmem[addr]=data;
-	}
-}
-
-void input(Z80_STATE *state) {
-	// handle IN()
-}
-
-void writeword(uint16_t addr, uint16_t data) {
-	if(addr>=0x4000) {
-	    zxmem[addr]=data;
-	    zxmem[addr+1]=data>>8;
-	}
+void mainloop(void) {
+	total += Z80Emulate(&zxcpu, CYCLES_PER_STEP);
+	ZX_Input();
+	ZX_Int();
+	ZX_Draw();
 }
 
 int main(int argc, char *argv[])
@@ -71,19 +106,34 @@ int main(int argc, char *argv[])
 	/* Spectrum screen is 32*8 by 24*8 */
 	screen = SDL_SetVideoMode(256, 192, 8, SDL_SWSURFACE);
 	zxmem = (uint8_t *)malloc(65536);
-	if(!zxmem) {
+	cached = (uint8_t *)malloc(65536);
+	screenbuf = (uint8_t *)malloc(256*192);
+	int i =0;
+	if(!zxmem || !cached) {
 		printf("Failed to allocate RAM\n");
 		ZX_End();
 	}
 
 	memset(zxmem,0,65535);
-
+	memset(cached,1,65535);
+	for(i=0;i<6912;i++) {
+		zxmem[16384+i]=rand()%256;
+	}
 	if(!ZX_LoadROM()) {
 		ZX_End();
 	}
 
 	ZX_SetPalette();
 
+	if(argc>1) {
+		ZX_LoadSCR(argv[1]);
+		while(1) {
+			ZX_Draw();
+		}
+	}
+
+	Z80Reset(&zxcpu);
+	zxcpu.im = Z80_INTERRUPT_MODE_1;
 	zxcpu.memory = zxmem;
 	zxcpu.readbyte = readbyte;
 	zxcpu.readword = readword;
@@ -92,11 +142,13 @@ int main(int argc, char *argv[])
 	zxcpu.input = input;
 	total = 0;
 
+#ifndef EMSCRIPTEN
 	for (;;) {
-		total += Z80Emulate(&zxcpu, CYCLES_PER_STEP);
-		ZX_Draw();
+		mainloop();
 	}
-
+#else
+	emscripten_set_main_loop(mainloop,0,1);
+#endif
 	ZX_End();
 	return 0;
 }
