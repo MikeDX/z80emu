@@ -45,7 +45,7 @@ extern "C" {
  * can be accepted at the instruction right after a DI or EI on an actual Z80 
  * processor.
  */
-
+ 
 /*      
 #define Z80_CATCH_HALT
 #define Z80_CATCH_DI
@@ -196,7 +196,9 @@ typedef struct Z80_STATE_ {
         void (*writebyte)(uint16_t,uint8_t);
         void (*writeword)(uint16_t,uint16_t);
         uint8_t (*input)(uint16_t);
+        void (*output)(uint16_t,uint8_t);
 
+        int elapsed_cycles;
 } Z80_STATE;
 
 /* Write the following macros for memory access and input/output on the Z80. 
@@ -290,7 +292,9 @@ typedef struct Z80_STATE_ {
 }
 
 #define Z80_OUTPUT_BYTE(port, x)                                        \
-{ }                                                                      \
+{ \
+        state->output(port,x); \
+}                                                                      
 //        number_cycles = 0;                                              \
 //        state->status |= FLAG_STOP_EMULATION;                           \
 //}

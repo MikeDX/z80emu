@@ -35,7 +35,7 @@ GLOBAL uint8_t *screenbuf;
 GLOBAL SDL_Surface *screen;
 GLOBAL uint8_t running;
 GLOBAL Z80_STATE zxcpu;
-
+GLOBAL uint8_t debug;
 // ZX VIDEO functions (zxvid.c)
 extern int ZX_SetPalette(void);
 extern void ZX_Draw(void);
@@ -48,6 +48,9 @@ extern void writebyte(uint16_t addr, uint8_t data);
 extern void writeword(uint16_t addr, uint16_t data);
 // IN call
 extern uint8_t input(uint16_t port);
+
+// OUT call
+extern void output(uint16_t port, uint8_t data);
 
 // User input routine
 extern void ZX_Input(void);

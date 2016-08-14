@@ -41,15 +41,45 @@ void writeword(uint16_t addr, uint16_t data) {
 
 }
 
+uint8_t zx_data =0;
 /* TODO: Fix IN routine */
 uint8_t input(uint16_t port) {
-	if(port == 0xFE)
-		return indata[zxcpu.registers.byte[Z80_B]];
+	uint8_t regb = zxcpu.registers.byte[Z80_B];
+	uint8_t data = zx_data;
+	switch(regb) {
+		case 0xFE:
+		case 0xFD:
+		case 0xFB:
+		case 0xF7:
+		case 0xEF:
+		case 0xDF:
+		case 0xBF:
+		case 0x7F:
+			data = indata[regb];
+			return data;
+			break;
+		default: 
+			printf("Reading port 0x%02x:%02x\n",regb,port);
+			printf("PC: %04X %d\n",zxcpu.pc, zxcpu.pc);
+			break;
+	}
 
+	data |= (0xe0); /* Set bits 5-7 - as reset above */
+//	data &= ~0x40;
 	// default
-	return 255;
+	return 255;//data;//indata[regb];
+	//zx_data;
 }
 
+void output(uint16_t port, uint8_t data) {
+//	indata[zxcpu.registers.byte[Z80_B]]=data;
+//	uint8_t data = 0xff;
+	printf("OUT %02X %02X %02X\n",zxcpu.registers.byte[Z80_B],port,data);
+//	zxcpu.r=data;
+//	indata[zxcpu.registers.byte[Z80_B]]=data;
+	zx_data = data;
+
+}
 // Setup keyboard array
 
 void ZX_KeyInit(void) {
@@ -179,6 +209,13 @@ void ZX_Input(void) {
 			case SDL_KEYDOWN:
 				indata[keyaddr[event.key.keysym.sym]]&=~keybuf[event.key.keysym.sym];
 				//printf("%d %d\n",event.key.keysym.sym,indata[keyaddr[event.key.keysym.sym]]);
+				if(event.key.keysym.sym == SDLK_ESCAPE) {
+					debug = 1;
+				}
+				if(event.key.keysym.sym == SDLK_TAB) {
+					debug = 0;
+				}
+
 				break;
 			case SDL_KEYUP:
 				indata[keyaddr[event.key.keysym.sym]]|=keybuf[event.key.keysym.sym];

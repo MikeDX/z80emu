@@ -270,8 +270,7 @@ static int emulate (Z80_STATE * state, int number_cycles, int opcode)
                 Z80_FETCH_BYTE(pc, opcode);
                 pc++;
 
-start_emulation:                
-
+start_emulation:
                 registers = register_table;
 
 emulate_next_opcode:
@@ -279,7 +278,9 @@ emulate_next_opcode:
                 instruction = INSTRUCTION_TABLE[opcode];
 
 emulate_next_instruction:
-
+            
+                state->elapsed_cycles = elapsed_cycles;
+            
                 elapsed_cycles += 4;
                 r++;
                 switch (instruction) {
@@ -1291,10 +1292,10 @@ emulate_next_instruction:
                                  * 0x6e) is treated like a "IM 0".
                                  */
 
-                                if (!(Y(opcode) & 0x04))
-
+                                if (!(Y(opcode) & 0x04)) {
                                         state->im = Z80_INTERRUPT_MODE_0;
-
+//                                        printf("PC: %04X\n",pc);
+                                }
                                 else if (!(Y(opcode) & 0x02))
 
                                         state->im = Z80_INTERRUPT_MODE_1;
@@ -2637,6 +2638,9 @@ emulate_next_instruction:
                         }
 
                 }
+
+                state->elapsed_cycles = elapsed_cycles;
+            
 
                 if (elapsed_cycles >= number_cycles)
 

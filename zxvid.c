@@ -170,7 +170,7 @@ void ZX_Draw(void) {
 	SDL_Flip(screen);
 	memset(&cached[16384],0,6912);
 	flash_count++;
-	if(flash_count>25) {
+	if(flash_count>16) {
 		flash_flip = 1- flash_flip;
 		flash_count = 0;
 	}

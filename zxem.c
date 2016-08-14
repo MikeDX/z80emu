@@ -35,8 +35,6 @@ int ZX_LoadSCR(char *path) {
 	int i = 0;
 	int j = 0;
 	
-	while(1) {
-	
 	for(i=0;i<10;i++) {
 		memset(&cached[16384],1,6912);
 		for(j=0;j<6912;j++) {
@@ -52,14 +50,14 @@ int ZX_LoadSCR(char *path) {
 	scri=0;
 	scrf=f;
 #ifndef EMSCRIPTEN
-	while(!feof(f)) {
+	while(!feof(f) && running) {
 		scrloop();
+		ZX_Input();
 	}
 	fclose(f);
 #else
 	emscripten_set_main_loop(scrloop,0,1);
 #endif	
-	}
 	return 1;
 
 }
@@ -67,7 +65,8 @@ int ZX_LoadROM(void) {
 	/* Load ZX Spectrum ROM into lower 16K mem */
 	FILE *f;
 
-	if(!(f=fopen("roms/48k.rom","r"))) {
+//	if(!(f=fopen("roms/48k.rom","r"))) {
+	if(!(f=fopen("roms/JGH.ROM","r"))) {
 		printf("Failed to open ROM\n");
 		return -1;
 	}
@@ -84,18 +83,54 @@ void ZX_End(void) {
 	SDL_Quit();
 }
 
-
+int oim  = 255;
 /* Handle Interrupt - called before each screen render */
 void ZX_Int(void) {
-	Z80Emulate(&zxcpu, Z80Interrupt(&zxcpu,0xFF));
+	if(oim!=zxcpu.im) {
+		oim = zxcpu.im;
+		printf("New interrupt: MODE: %d ",zxcpu.im);
+		switch(oim) {
+			case Z80_INTERRUPT_MODE_0:
+				printf("mode 0\n");
+				break;
+			case Z80_INTERRUPT_MODE_1:
+				printf("mode 1\n");
+				break;
+			case Z80_INTERRUPT_MODE_2:
+				printf("mode 2\n");
+				break;
+			default:
+				printf("????\n");
+		}
+						
+	}
+
+//	if(zxcpu.status==Z80_STATUS_FLAG_HALT) {
+//		zxcpu.status&=~Z80_STATUS_FLAG_HALT;
+//		zxcpu.pc++;
+//	}
+
+	Z80Emulate(&zxcpu, Z80Interrupt(&zxcpu,0xff));
+
+
+////	Z80Emulate(&zxcpu, );
 }
 
+int next_total = 0;
 
 void mainloop(void) {
-	total += Z80Emulate(&zxcpu, CYCLES_PER_STEP);
-	ZX_Input();
-	ZX_Int();
-	ZX_Draw();
+	if(!debug) {
+		total += Z80Emulate(&zxcpu, next_total-total);
+	} else {
+		total += Z80Emulate(&zxcpu, 1);
+		printf("PC: 0x%04X\n",zxcpu.pc);
+	}
+	if(total>=next_total) {
+		next_total +=CYCLES_PER_STEP;
+		ZX_Input();
+		ZX_Int();
+		ZX_Draw();
+	}
 }
 
 int main(int argc, char *argv[])
@@ -125,22 +160,28 @@ int main(int argc, char *argv[])
 	ZX_SetPalette();
 
 	if(argc>1) {
+		running = 1;
 		ZX_LoadSCR(argv[1]);
-		while(1) {
+		while(running) {
 			ZX_Draw();
+			ZX_Input();
 		}
 	}
 
 	Z80Reset(&zxcpu);
-	zxcpu.im = Z80_INTERRUPT_MODE_1;
+	zxcpu.im = Z80_INTERRUPT_MODE_0;
 	zxcpu.memory = zxmem;
 	zxcpu.readbyte = readbyte;
 	zxcpu.readword = readword;
 	zxcpu.writeword = writeword;
 	zxcpu.writebyte = writebyte;
 	zxcpu.input = input;
+	zxcpu.output = output;
+	
 	total = 0;
 	running = 1;
+	debug = 0;
+
 #ifndef EMSCRIPTEN
 	while(running) {
 		mainloop();
