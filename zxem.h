@@ -33,7 +33,8 @@ GLOBAL uint8_t *cached;
 GLOBAL uint8_t *screenbuf;
 
 GLOBAL SDL_Surface *screen;
-
+GLOBAL uint8_t running;
+GLOBAL Z80_STATE zxcpu;
 
 // ZX VIDEO functions (zxvid.c)
 extern int ZX_SetPalette(void);

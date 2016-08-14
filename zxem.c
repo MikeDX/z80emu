@@ -12,7 +12,6 @@
 
 // Include SDL Main header
 
-Z80_STATE zxcpu;
 double          total;
 int stopped;
 
@@ -141,9 +140,9 @@ int main(int argc, char *argv[])
 	zxcpu.writebyte = writebyte;
 	zxcpu.input = input;
 	total = 0;
-
+	running = 1;
 #ifndef EMSCRIPTEN
-	for (;;) {
+	while(running) {
 		mainloop();
 	}
 #else
