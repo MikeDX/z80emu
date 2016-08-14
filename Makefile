@@ -54,6 +54,12 @@ $(TARGET): $(OBJECT_FILES)
 $(TEST_TARGET): tests/cputest.c z80emu.h $(OBJDIR)/z80emu.o
 	$(CC) $(CFLAGS) $< $(OBJDIR)/z80emu.o  -o $@
 
+z80emu.o: z80emu.c z80emu.h z80config.h z80user.h \
+	instructions.h macros.h tables.h
+	$(CC) $(CFLAGS) -c $<
+
+zextest.o: zextest.c zextest.h z80emu.h z80config.h
+	$(CC) -Wall -c $<
 
 clean: 
 	rm *.o 

@@ -1,91 +1,36 @@
 /* z80emu.h
- * Main header of z80emu. Modify it to suit your needs.
+ * Main header of z80emu. Don't modify this file directly. Use z80config.h and
+ * z80user.h to customize the emulator to your need. 
  *
- * Copyright (c) 2012 Lin Ke-Fong
+ * Copyright (c) 2012-2016 Lin Ke-Fong
  *
  * This program is free, do whatever you want with it.
  */
 
-#ifndef __Z80_INCLUDED__
+#ifndef __Z80EMU_INCLUDED__
+#define __Z80EMU_INCLUDED__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <stdint.h>
+#include "z80config.h"
 
-/* Define or comment the following macros to control the features implemented
- * in the emulator. 
+/* If Z80_STATE's status is non-zero, the emulation has been stopped for some 
+ * reason other than emulating the requested number of cycles. See z80config.h.
  */
 
-/* Define this macro if the host processor is big endian. */
+enum {
 
-/* #define Z80_BIG_ENDIAN */
+	Z80_STATUS_HALT = 1,
+	Z80_STATUS_DI,
+	Z80_STATUS_EI,
+	Z80_STATUS_RETI,
+	Z80_STATUS_RETN,
+	Z80_STATUS_ED_UNDEFINED,
+	Z80_STATUS_PREFIX
 
-/* Emulation can be speed up a little bit by emulating only the documented
- * flags.
- */     
-
-/* #define Z80_DOCUMENTED_FLAGS_ONLY */
-
-/* The emulator cannot be stopped between prefixed opcodes. This can be a 
- * problem if there is a long sequence of 0xdd and/or 0xfd prefixes. But if
- * Z80_PREFIX_FAILSAFE is defined, it will always be able to stop after at 
- * least number_cycles cycles are executed. This is safer but a little bit 
- * slower for 0xdd and 0xfd prefixes handling. Most program won't need this
- * feature.
- */
-
-/* #define Z80_PREFIX_FAILSAFE */
-
-/* HALT, DI, EI, RETI, and RETN instructions can be catched. When such an
- * instruction is catched, the emulator is stopped and the PC register points
- * at the opcode to be executed next. The catched instruction can be retrieved
- * from the flags of Z80_STATE's status member. Keep in mind that no interrupt
- * can be accepted at the instruction right after a DI or EI on an actual Z80 
- * processor.
- */
- 
-/*      
-#define Z80_CATCH_HALT
-#define Z80_CATCH_DI
-#define Z80_CATCH_EI
-#define Z80_CATCH_RETI
-#define Z80_CATCH_RETN
-*/
-
-/* Undefined 0xed prefixed opcodes may be catched, otherwise they are treated
- * like NOPs. When one is catched, Z80_STATUS_FLAG_ED_UNDEFINED is set in 
- * Z80_STATE's status member and the PC register points at the 0xed prefix 
- * before the undefined opcode. The elapsed cycles are not counted.
- */
-
-/* #define Z80_CATCH_ED_UNDEFINED */
-        
-/* By defining this macro, the emulator will always fetch the displacement or 
- * address of a conditionnal jump or call instruction, even if the condition 
- * is false and the fetch can be avoided.
- */
-
-/* #define Z80_FALSE_CONDITION_FETCH */
-
-/* It may be possible to overwrite the opcode of the currently executing LDIR, 
- * LDDR, INIR, or OTDR instruction. Define this macro, if you need to handle 
- * those pathological cases.
- */
-
-/* #define Z80_HANDLE_SELF_MODIFYING_CODE */
-
-/* Flags for Z80_STATE's status member. If the emulation is interrupted, status
- * can indicate why. You may add additionnal flags for your own use as needed.
- */
-
-#define Z80_STATUS_FLAG_HALT            (1 << 0)
-#define Z80_STATUS_FLAG_DI              (1 << 1)
-#define Z80_STATUS_FLAG_EI              (1 << 2)
-#define Z80_STATUS_FLAG_RETI            (1 << 3)
-#define Z80_STATUS_FLAG_RETN            (1 << 4)
-#define Z80_STATUS_FLAG_ED_UNDEFINED    (1 << 5)
+};
  
 /* The main registers are stored inside Z80_STATE as an union of arrays named 
  * registers. They are referenced using indexes. Words are stored in the 
@@ -172,14 +117,17 @@ enum {
 
 };
 
-/* Z80 processor's state, you may add additionnal members as necessary. */
+/* Z80 processor's state. You may add your own members if needed. However, it
+ * is rather suggested to use the context pointer passed to the emulation 
+ * functions for that purpose. See z80user.h.
+ */ 
 
-typedef struct Z80_STATE_ {
+typedef struct Z80_STATE {
 
         int             status;
-                                
+
         union {
-                                
+
                 unsigned char   byte[14];
                 unsigned short  word[7];
 
@@ -188,130 +136,47 @@ typedef struct Z80_STATE_ {
         unsigned short  alternates[4];
 
         int             i, r, pc, iff1, iff2, im;
+        
+        /* Register decoding tables. */
 
-        uint8_t  *memory;
+        void            *register_table[16], 
+                        *dd_register_table[16], 
+                        *fd_register_table[16];        
 
-        uint8_t (*readbyte)(uint16_t);
-        uint16_t (*readword)(uint16_t);
-        void (*writebyte)(uint16_t,uint8_t);
-        void (*writeword)(uint16_t,uint16_t);
-        uint8_t (*input)(uint16_t);
-        void (*output)(uint16_t,uint8_t);
-
-        int elapsed_cycles;
 } Z80_STATE;
 
-/* Write the following macros for memory access and input/output on the Z80. 
- *
- * Z80_FETCH_BYTE() and Z80_FETCH_WORD() are used by the emulator to read the
- * code (opcode, constants, displacement, etc). The upper 16-bit of the address
- * parameters is undefined and must be reset to zero before actually reading 
- * memory (use & 0xffff). The value x read, must be an unsigned 8-bit or 16-bit
- * value in the endianness of the host processor.
- *
- * Z80_READ_BYTE(), Z80_WRITE_BYTE(), Z80_READ_WORD(), and Z80_WRITE_WORD()
- * are used for general memory access. They obey the same rule as the code 
- * reading macros. The upper bits of the value x to write may be non-zero.
- * 
- * Z80_INPUT_BYTE() and Z80_OUTPUT_BYTE() are for input and output. The upper
- * bits of the port number to read or write are always zero. The input byte x 
- * must be an unsigned 8-bit value. The value x to write is an unsigned 8-bit 
- * with its upper bits zeroes.
- *
- * All macros have access to the following variables:
- *
- *      state           Pointer to the current Z80_STATE. Member registers is
- *                      most likely not up to date because the current 
- *                      executing instruction is working on it.
- *
- *      pc              Current PC register (upper bits are undefined). It
- *                      points on the displacement or constant to read for
- *                      Z80_FETCH_BYTE() and Z80_FETCH_WORD(), or on the next
- *                      instruction otherwise.
- *              
- *      number_cycles   Number of cycles to emulate. Set number_cycles to zero
- *                      if you want to quit emulation after completion of the
- *                      current instruction.
- *
- *      elapsed_cycles  Number of cycles emulated, you may add wait states
- *                      for slow memory accesses as needed.
- *
- *      instruction     Type of the currently executing instruction, see
- *                      instructions.h for a list.
- *
- *      registers       Current register decoding table, it points on 
- *                      dd_register_table for 0xdd prefixed instructions, 
- *                      fd_register_table for 0xfd ones, or register_table
- *                      otherwise.
- *
- *      opcode          Opcode of the currently executing instruction, check
- *                      register_table for 0xdd or 0xfd prefixes.
- */
-
-/* Here are macros for the zextest example. Read/write memory macros have been 
- * written for a linear 64k RAM. Input/output port macros are used to simulate 
- * system calls.
- */
-
-#include "zextest.h"
-
-#define Z80_FETCH_BYTE(address, x)                                      \
-{                                                                       \
-        (x) = state->readbyte(address); \
-}
-
-#define Z80_FETCH_WORD(address, x)                                      \
-{                                                                       \
-        (x) = state->readword((address) & 0xffff);                                \
-}
-
-#define Z80_READ_BYTE(address, x)                                       \
-{                                                                       \
-        (x) = state->readbyte(address & 0xffff);   \
-}
-
-#define Z80_WRITE_BYTE(address, x)                                      \
-{                                                                       \
-        state->writebyte((address) & 0xffff,x); \
-}
-
-#define Z80_READ_WORD(address, x)                                       \
-{                                                                       \
-        (x) = state->readword((address) & 0xffff); \
-}
-
-#define Z80_WRITE_WORD(address, x)                                      \
-{                                                                       \
-        state->writeword((address) & 0xffff, x);   \
-}
-
-#define Z80_INPUT_BYTE(port, x)                                         \
-{                                                                       \
-        (x) = 0;                /* Make compiler happy. */              \
-        x = state->input(port);                                              \
-}
-
-#define Z80_OUTPUT_BYTE(port, x)                                        \
-{ \
-        state->output(port,x); \
-}                                                                      
-//        number_cycles = 0;                                              \
-//        state->status |= FLAG_STOP_EMULATION;                           \
-//}
-
-/* See comments in z80emu.c for a description of each functions. */
+/* Initialize processor's state to power-on default. */
 
 extern void     Z80Reset (Z80_STATE *state);
 
-extern int      Z80Interrupt (Z80_STATE *state, int data_on_bus);
-extern int      Z80NonMaskableInterrupt (Z80_STATE *state);
- 
-extern int      Z80Emulate (Z80_STATE *state, int number_cycles);
+/* Trigger an interrupt according to the current interrupt mode and return the
+ * number of cycles elapsed to accept it. If maskable interrupts are disabled,
+ * this will return zero. In interrupt mode 0, data_on_bus must be a single 
+ * byte opcode.
+ */
+
+extern int      Z80Interrupt (Z80_STATE *state, 
+			int data_on_bus, 
+			void *context);
+
+/* Trigger a non maskable interrupt, then return the number of cycles elapsed
+ * to accept it.
+ */
+
+extern int      Z80NonMaskableInterrupt (Z80_STATE *state, void *context);
+
+/* Execute instructions as long as the number of elapsed cycles is smaller than
+ * number_cycles, and return the number of cycles emulated. The emulator can be
+ *  set to stop early on some conditions (see z80config.h). The user macros 
+ * (see z80user.h) can also control the emulation.
+ */
+
+extern int      Z80Emulate (Z80_STATE *state, 
+			int number_cycles, 
+			void *context);
 
 #ifdef __cplusplus
 }
 #endif
-
-#define __Z80_INCLUDED__
 
 #endif

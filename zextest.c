@@ -2,7 +2,7 @@
  * Example program using z80emu to run the zexall and zexdoc tests. This will 
  * check if the Z80 is correctly emulated.
  *
- * Copyright (c) 2012 Lin Ke-Fong
+ * Copyright (c) 2012-2016 Lin Ke-Fong
  * Copyright (c) 2012 Chris Pressey
  *
  * This program is free, do whatever you want with it.
@@ -10,6 +10,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+#include "zextest.h"
 #include "z80emu.h"
 #ifdef EMSCRIPTEN
 #include <emscripten.h>
@@ -26,15 +28,19 @@
 
 #define MAXIMUM_STRING_LENGTH   100
 
-unsigned char   memory[1 << 16];
-
-static void     emulate (char *filename);
+static void	emulate (char *filename);
 
 int main (void)
-
 {
+	time_t	start, stop;
+
+	start = time(NULL);
         emulate("testfiles/zexdoc.com");
         emulate("testfiles/zexall.com");        
+	stop = time(NULL);
+	printf("Emulating zexdoc and zexall took a total of %d second(s).\n",
+		(int) (stop - start));
+
         return EXIT_SUCCESS;
 }
 
@@ -73,25 +79,29 @@ void writeword(uint16_t addr, uint16_t data) {
 }
 
 static void emulate (char *filename)
-
 {
+<<<<<<< HEAD
         FILE            *file;
         long            l;
+=======
+        FILE   	*file;
+        long   	l;
+	ZEXTEST	context;
+        double 	total;
+>>>>>>> first-app
 
         printf("Testing \"%s\"...\n", filename);
-
         if ((file = fopen(filename, "rb")) == NULL) {
 
                 fprintf(stderr, "Can't open file!\n");
                 exit(EXIT_FAILURE);
 
         }
-
         fseek(file, 0, SEEK_END);
         l = ftell(file);
 
         fseek(file, 0, SEEK_SET);
-        fread(memory + 0x100, 1, l, file);
+        fread(context.memory + 0x100, 1, l, file);
 
         fclose(file);
 
@@ -104,27 +114,38 @@ static void emulate (char *filename)
 
         /* Patch memory of the program. Reset at 0x0000 is trapped by an OUT
          * which will stop emulation. CP/M bdos call 5 is trapped by an IN. See
-         * Z80_INPUT_BYTE() and Z80_OUTPUT_BYTE() definitions in z80emu.h.
+         * Z80_INPUT_BYTE() and Z80_OUTPUT_BYTE() definitions in z80user.h.
          */
 
-        memory[0] = 0xd3;       /* OUT N, A */
-        memory[1] = 0x00;
+        context.memory[0] = 0xd3;       /* OUT N, A */
+        context.memory[1] = 0x00;
 
-        memory[5] = 0xdb;       /* IN A, N */
-        memory[6] = 0x00;
-        memory[7] = 0xc9;       /* RET */
+        context.memory[5] = 0xdb;       /* IN A, N */
+        context.memory[6] = 0x00;
+        context.memory[7] = 0xc9;       /* RET */
+
+	context.is_done = 0;
 
         /* Emulate. */
 
-        Z80Reset(&state);
-        state.pc = 0x100;
+        Z80Reset(&context.state);
+        context.state.pc = 0x100;
         total = 0.0;
 #ifndef EMSCRIPTEN
 		stopped = 0;
         for ( ; ; ) {
+<<<<<<< HEAD
 			mainloop();
 			if(stopped == 1)
 				break;
+=======
+
+                total += Z80Emulate(&context.state, CYCLES_PER_STEP, &context);
+                if (context.is_done)
+
+                        break;
+
+>>>>>>> first-app
         }
 #else
 		emscripten_set_main_loop(mainloop,0,1);
@@ -143,21 +164,21 @@ static void emulate (char *filename)
  * (output $-terminated string to screen).
  */
 
-void SystemCall (Z80_STATE *state)
+void SystemCall (ZEXTEST *zextest)
 {
-        if (state->registers.byte[Z80_C] == 2)
+        if (zextest->state.registers.byte[Z80_C] == 2)
 
-                printf("%c", state->registers.byte[Z80_E]);
+                printf("%c", zextest->state.registers.byte[Z80_E]);
 
-        else if (state->registers.byte[Z80_C] == 9) {
+        else if (zextest->state.registers.byte[Z80_C] == 9) {
 
                 int     i, c;
 
-                for (i = state->registers.word[Z80_DE], c = 0; 
-                        memory[i] != '$';
+                for (i = zextest->state.registers.word[Z80_DE], c = 0; 
+                        zextest->memory[i] != '$';
                         i++) {
 
-                        printf("%c", memory[i & 0xffff]);
+                        printf("%c", zextest->memory[i & 0xffff]);
                         if (c++ > MAXIMUM_STRING_LENGTH) {
 
                                 fprintf(stderr,
