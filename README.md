@@ -15,6 +15,7 @@ ZXEMU is a free open source cross platform ZX Spectrum emulator, currently work 
 ## TODO list
 - [x] Working Z80 CPU Core  
 - [x] Screen renderer (pixels, ink, paper, bright, flash)
+- [x] Keyboard input  
 - [x] Spectrum 48k rom support  
 - [x] .scr image viewer
 - [x] Windows port  
