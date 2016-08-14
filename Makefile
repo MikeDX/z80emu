@@ -4,6 +4,7 @@ SDLFLAGS = $(shell sdl-config --cflags)
 SDLLIBS = $(shell sdl-config --libs)
 CC = gcc
 TARGET = zxem
+TEST_TARGET = tests/zxtest
 OBJDIR = obj
 ifndef PLAT
 PLAT = NATIVE
@@ -24,7 +25,7 @@ TARGET := $(TARGET).html
 OBJDIR = objhtml
 endif
 
-all: $(OBJDIR) $(TARGET)
+all: $(OBJDIR) $(TARGET) $(TEST_TARGET)
 
 $(OBJDIR):
 	mkdir $(OBJDIR)
@@ -49,6 +50,10 @@ OBJECT_FILES = $(OBJDIR)/zxem.o $(OBJDIR)/z80emu.o $(OBJDIR)/zxvid.o $(OBJDIR)/z
 
 $(TARGET): $(OBJECT_FILES)
 	$(CC) $(CFLAGS) $(SDLLIBS) $(OBJECT_FILES) $(LINKFLAGS) -o $@
+
+$(TEST_TARGET): tests/cputest.c z80emu.h $(OBJDIR)/z80emu.o
+	$(CC) $(CFLAGS) $< $(OBJDIR)/z80emu.o  -o $@
+
 
 clean: 
 	rm *.o 
