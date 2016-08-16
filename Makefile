@@ -48,8 +48,8 @@ $(OBJDIR)/zxio.o: zxio.c zxem.h
 OBJECT_FILES = $(OBJDIR)/zxem.o $(OBJDIR)/z80emu.o $(OBJDIR)/zxvid.o $(OBJDIR)/zxio.o
 
 $(TARGET): $(OBJECT_FILES)
-	$(CC) $(CFLAGS) $(SDLLIBS) $(OBJECT_FILES) $(LINKFLAGS) -o $@
+	$(CC) $(CFLAGS) $(OBJECT_FILES) $(SDLLIBS) $(LINKFLAGS) -o $@
 
 clean: 
-	rm *.o 
+	rm $(OBJDIR)/*.o 
 	rm $(TARGET)
