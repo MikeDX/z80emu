@@ -49,12 +49,12 @@ $(OBJDIR)/zxio.o: zxio.c zxem.h
 OBJECT_FILES = $(OBJDIR)/zxem.o $(OBJDIR)/z80emu.o $(OBJDIR)/zxvid.o $(OBJDIR)/zxio.o
 
 $(TARGET): $(OBJECT_FILES)
-	$(CC) $(CFLAGS) $(SDLLIBS) $(OBJECT_FILES) $(LINKFLAGS) -o $@
+	$(CC) $(CFLAGS) $(OBJECT_FILES) $(SDLLIBS) $(LINKFLAGS) -o $@
 
 $(TEST_TARGET): tests/cputest.c z80emu.h $(OBJDIR)/z80emu.o
 	$(CC) $(CFLAGS) $< $(OBJDIR)/z80emu.o  -o $@
 
 
 clean: 
-	rm *.o 
+	rm $(OBJDIR)/*.o 
 	rm $(TARGET)
