@@ -1,6 +1,7 @@
 language: c
+
 addons:
   apt:
-    - sdl1.2-debian-dev
+    - libsdl1.2-dev
 
 script: make
