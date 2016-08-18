@@ -25,9 +25,12 @@ int main(int argc, char *argv[])
 
 void OSD_Init(void) {
 	SDL_Init(SDL_INIT_EVERYTHING);
+	// TODO - Setup keybindings
 }
 
 void OSD_Quit(void) {
+	// TODO - Destroy stuff
+	SDL_FreeSurface(screen);
 	SDL_Quit();
 }
 
@@ -50,14 +53,13 @@ void OSD_SetPalette(void) {
 }
 
 void OSD_RenderScreen(void) {
-	/* TODO - Call the actual screen render elsewhere */
 	int y;
 	SDL_LockSurface(screen);
 	uint8_t *pixels = screen->pixels;
 	for(y=0;y<192;y++) {
 		memcpy(pixels,&screenbuf[y*256],256);
 		pixels+=screen->pitch;
-	}	
+	}
 	SDL_UnlockSurface(screen);
 	SDL_Flip(screen);
 }
@@ -68,8 +70,8 @@ void OSD_Input(void) {
 	while(SDL_PollEvent(&event)) {
 		switch(event.type) {
 			case SDL_KEYDOWN:
-//				indata[keyaddr[event.key.keysym.sym]]&=~keybuf[event.key.keysym.sym];
-				printf("%d %d\n",event.key.keysym.sym,indata[keyaddr[event.key.keysym.sym]]);
+				indata[keyaddr[event.key.keysym.sym]]&=~keybuf[event.key.keysym.sym];
+//				printf("%d %d\n",event.key.keysym.sym,indata[keyaddr[event.key.keysym.sym]]);
 				if(event.key.keysym.sym == SDLK_ESCAPE) {
 					debug = 1;
 				}
@@ -79,7 +81,7 @@ void OSD_Input(void) {
 
 				break;
 			case SDL_KEYUP:
-//				indata[keyaddr[event.key.keysym.sym]]|=keybuf[event.key.keysym.sym];
+				indata[keyaddr[event.key.keysym.sym]]|=keybuf[event.key.keysym.sym];
 				break;
 
 			case SDL_QUIT:

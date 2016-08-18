@@ -23,8 +23,8 @@ OSDLIBS = $(shell sdl-config --libs)
 endif
 ifeq ($(SDL), 2)
 OSD_SOURCE = src/osdep/sdl2.c
-SDLFLAGS = $(shell sdl2-config --cflags)
-SDLLIBS = $(shell sdl2-config --libs)
+OSDFLAGS = $(shell sdl2-config --cflags)
+OSDLIBS = $(shell sdl2-config --libs)
 endif
 endif
 
