@@ -11,6 +11,7 @@ Copyright (c) 2012-2014 Lin Ke-Fong
 
 ZXEMU is a free open source cross platform ZX Spectrum emulator, currently work in progress hoping to support various models of ZX Spectrum.
 
+[![Build Status](https://travis-ci.org/MikeDX/z80emu.svg?branch=master)](https://travis-ci.org/MikeDX/z80emu)
 
 ## TODO list
 - [x] Working Z80 CPU Core  
