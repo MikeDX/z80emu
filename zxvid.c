@@ -99,17 +99,23 @@ void ZX_Draw(void) {
 
 	attrib_addr = 16384+6144;
 	// Each byte in spectrum memory draws 8 pixels
+	// with an additional byte for attributes of each 8x8 pixel block.
+
+	// Draw all rows 0 - 23
 	for(y=0; y<24;y++) {
 
 		// yp is y in pixels
 		yp=y*8;
 
+		// Calculate pixel address offset from the x/y 8x8 block we want to draw.
 		pixel_addr = ((yp>>3)<<5)&0xFF;
 		pixel_addr += ((yp&0x7)+(((yp>>6)&0x3)<<3))<<8;
-		pixel_addr +=16384;
 
-		// Draw each 8x8 block
+		pixel_addr +=16384; // Start of screen memory
+
+		// Draw each 8x8 block 0 - 31
 		for ( x=0;x<32;x++ ) {
+
 			// Buf Addr is the first pixel we want to draw on
 			buf_addr = (y*8)*screen->pitch + x*8;
 
@@ -131,11 +137,17 @@ void ZX_Draw(void) {
 			}
 
 			// bit 7 is flash
-			flash = (attrib >> 7);
+
+			// TODO - which is faster?
+			// flash = (attrib >> 7);
+			// flash = (attrib > 63);
+			flash = (attrib & 0x80);
 
 			if(flash && flash_flip) {
-				paper = ink;
-				ink =( (attrib >>3) &0x7 ) + bright *8;
+				// XOR trick for swapping ink / paper
+				paper = paper ^ ink;
+				ink = paper ^ ink;
+				paper = paper ^ ink;
 			}
 
 			for(j=0;j<8;j++) {
@@ -150,8 +162,10 @@ void ZX_Draw(void) {
 						screenbuf[buf_addr]=(pix&1<<i)?ink:paper;
 						buf_addr++;
 					}
+					// move buffer back 
 					buf_addr-=8;
 				}
+				// move to next line
 				buf_addr+=256;
 			}
 			
@@ -163,19 +177,22 @@ void ZX_Draw(void) {
 		}
 
 	}
+	/* TODO - Call the actual screen render elsewhere */
 	SDL_LockSurface(screen);
 	uint8_t *pixels = screen->pixels;
-	memcpy(pixels,screenbuf,256*192);
+	for(y=0;y<192;y++) {
+		memcpy(pixels,&screenbuf[y*256],256);
+		pixels+=screen->pitch;
+	}	
 	SDL_UnlockSurface(screen);
 	SDL_Flip(screen);
 	memset(&cached[16384],0,6912);
+
+	// Flash flip changes every 16 frames
 	flash_count++;
 	if(flash_count>16) {
-		flash_flip = 1- flash_flip;
+		flash_flip = !flash_flip;
 		flash_count = 0;
 	}
-#ifdef EMSCRIPTEN
-//	emscripten_cancel_main_loop();
-#endif
 }
 
