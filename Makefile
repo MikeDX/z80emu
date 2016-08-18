@@ -31,10 +31,10 @@ endif
 
 ifeq ($(PLAT), HTML)
 CC = emcc
-SDLFLAGS = -s USE_SDL=$(SDL)
-SDLLIBS = -lSDL
+OSDFLAGS = -s USE_SDL=$(SDL)
+OSDLIBS = 
 OLEVEL += -s ASM_JS=1 
-LINKFLAGS = $(OLEVEL) --preload-files roms/ --preload-files scr/ --emrun
+LINKFLAGS = $(OSDFLAGS) $(OLEVEL) --preload-files roms/ --preload-files scr/ --emrun
 TARGET := $(TARGET).html
 OBJDIR = objhtml
 endif
