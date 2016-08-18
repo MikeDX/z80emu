@@ -148,7 +148,7 @@ void mainloop(void) {
 	}
 }
 
-int main(int argc, char *argv[])
+int ZX_main(int argc, char *argv[])
 {
 	int i =0;
 	

@@ -10,6 +10,12 @@
 #include "osdep.h"
 #include "zxem.h"
 
+int main(int argc, char *argv[])
+{
+	ZX_main(argc, argv);
+	return 0;
+}
+
 void OSD_Init(void) {
 
 }

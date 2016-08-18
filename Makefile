@@ -52,7 +52,7 @@ $(OBJDIR)/z80emu.o: z80emu.c z80emu.h instructions.h macros.h tables.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJDIR)/zxem.o: zxem.c zxem.h z80emu.h osdep.h
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(OSDFLAGS) -c $< -o $@
 
 $(OBJDIR)/zxvid.o: zxvid.c zxem.h osdep.h
 	$(CC) $(CFLAGS) -c $< -o $@

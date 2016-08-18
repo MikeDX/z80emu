@@ -50,6 +50,10 @@ GLOBAL uint8_t *screenbuf;
 GLOBAL uint8_t running;
 GLOBAL Z80_STATE zxcpu;
 GLOBAL uint8_t debug;
+
+// Main entry point
+int ZX_main(int argc, char *argv[]);
+
 // ZX VIDEO functions (zxvid.c)
 extern int ZX_SetPalette(void);
 extern void ZX_Draw(void);

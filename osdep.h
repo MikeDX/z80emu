@@ -11,6 +11,8 @@
 #ifndef _OSDEP_H_
 #define _OSDEP_H_
 
+int main(int argc, char *argv[]);
+
 void OSD_Init(void);
 void OSD_Quit(void);
 

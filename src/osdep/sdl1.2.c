@@ -7,12 +7,21 @@
  * 
  * OSDEP file for SDL1.2
  */
+#include <SDL.h>
 #include "osdep.h"
 #include "zxem.h"
 
-#include <SDL.h>
 
 SDL_Surface *screen;
+
+// Define program entry point
+// Just calling ZX_main is enough for most
+
+int main(int argc, char *argv[])
+{
+	ZX_main(argc, argv);
+	return 0;
+}
 
 void OSD_Init(void) {
 	SDL_Init(SDL_INIT_EVERYTHING);
@@ -57,7 +66,6 @@ void OSD_Input(void) {
 	SDL_Event event;
 
 	while(SDL_PollEvent(&event)) {
-		printf("%x\n",event);
 		switch(event.type) {
 			case SDL_KEYDOWN:
 //				indata[keyaddr[event.key.keysym.sym]]&=~keybuf[event.key.keysym.sym];
