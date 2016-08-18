@@ -1,11 +1,9 @@
 #include "zxem.h"
 
+
 // Keyboard routines
 // Verbose for no reason.
-uint8_t keyaddr[1024];
-uint8_t keybuf[1024];
 
-uint8_t indata[255];
 
 uint8_t keysetup = 0;
 
@@ -85,112 +83,108 @@ void output(uint16_t port, uint8_t data) {
 void ZX_KeyInit(void) {
 
 	// 0xFEFE
-	keyaddr[SDLK_LSHIFT]=0xFE;
-	keyaddr[SDLK_LSHIFT]=0xFE;
-	keyaddr[SDLK_z]=0xFE;
-	keyaddr[SDLK_x]=0xFE;
-	keyaddr[SDLK_c]=0xFE;
-	keyaddr[SDLK_v]=0xFE;
+	keyaddr[ZX_KEY_SHIFT]=0xFE;
+	keyaddr[ZX_KEY_Z]=0xFE;
+	keyaddr[ZX_KEY_X]=0xFE;
+	keyaddr[ZX_KEY_C]=0xFE;
+	keyaddr[ZX_KEY_V]=0xFE;
 
-	keybuf[SDLK_RSHIFT]=1;
-	keybuf[SDLK_LSHIFT]=1;
-	keybuf[SDLK_z]=2;
-	keybuf[SDLK_x]=4;
-	keybuf[SDLK_c]=8;
-	keybuf[SDLK_v]=16;
+	keybuf[ZX_KEY_SHIFT]=1;
+	keybuf[ZX_KEY_Z]=2;
+	keybuf[ZX_KEY_X]=4;
+	keybuf[ZX_KEY_C]=8;
+	keybuf[ZX_KEY_V]=16;
 
 	// 0xFDFE
-	keyaddr[SDLK_a]=0xFD;
-	keyaddr[SDLK_s]=0xFD;
-	keyaddr[SDLK_d]=0xFD;
-	keyaddr[SDLK_f]=0xFD;
-	keyaddr[SDLK_g]=0xFD;
+	keyaddr[ZX_KEY_A]=0xFD;
+	keyaddr[ZX_KEY_S]=0xFD;
+	keyaddr[ZX_KEY_D]=0xFD;
+	keyaddr[ZX_KEY_F]=0xFD;
+	keyaddr[ZX_KEY_G]=0xFD;
 
-	keybuf[SDLK_a]=1;
-	keybuf[SDLK_s]=2;
-	keybuf[SDLK_d]=4;
-	keybuf[SDLK_f]=8;
-	keybuf[SDLK_g]=16;
+	keybuf[ZX_KEY_A]=1;
+	keybuf[ZX_KEY_S]=2;
+	keybuf[ZX_KEY_D]=4;
+	keybuf[ZX_KEY_F]=8;
+	keybuf[ZX_KEY_G]=16;
 
 	// 0xFBFE
-	keyaddr[SDLK_q]=0xFB;
-	keyaddr[SDLK_w]=0xFB;
-	keyaddr[SDLK_e]=0xFB;
-	keyaddr[SDLK_r]=0xFB;
-	keyaddr[SDLK_t]=0xFB;
+	keyaddr[ZX_KEY_Q]=0xFB;
+	keyaddr[ZX_KEY_W]=0xFB;
+	keyaddr[ZX_KEY_E]=0xFB;
+	keyaddr[ZX_KEY_R]=0xFB;
+	keyaddr[ZX_KEY_T]=0xFB;
 
-	keybuf[SDLK_q]=1;
-	keybuf[SDLK_w]=2;
-	keybuf[SDLK_e]=4;
-	keybuf[SDLK_r]=8;
-	keybuf[SDLK_t]=16;
+	keybuf[ZX_KEY_Q]=1;
+	keybuf[ZX_KEY_W]=2;
+	keybuf[ZX_KEY_E]=4;
+	keybuf[ZX_KEY_R]=8;
+	keybuf[ZX_KEY_T]=16;
 
 	// 0xF7FE
-	keyaddr[SDLK_1]=0xF7;
-	keyaddr[SDLK_2]=0xF7;
-	keyaddr[SDLK_3]=0xF7;
-	keyaddr[SDLK_4]=0xF7;
-	keyaddr[SDLK_5]=0xF7;
+	keyaddr[ZX_KEY_1]=0xF7;
+	keyaddr[ZX_KEY_2]=0xF7;
+	keyaddr[ZX_KEY_3]=0xF7;
+	keyaddr[ZX_KEY_4]=0xF7;
+	keyaddr[ZX_KEY_5]=0xF7;
 
-	keybuf[SDLK_1]=1;
-	keybuf[SDLK_2]=2;
-	keybuf[SDLK_3]=4;
-	keybuf[SDLK_4]=8;
-	keybuf[SDLK_5]=16;
+	keybuf[ZX_KEY_1]=1;
+	keybuf[ZX_KEY_2]=2;
+	keybuf[ZX_KEY_3]=4;
+	keybuf[ZX_KEY_4]=8;
+	keybuf[ZX_KEY_5]=16;
 
 	// 0xEFFE
-	keyaddr[SDLK_6]=0xEF;
-	keyaddr[SDLK_7]=0xEF;
-	keyaddr[SDLK_8]=0xEF;
-	keyaddr[SDLK_9]=0xEF;
-	keyaddr[SDLK_0]=0xEF;
+	keyaddr[ZX_KEY_0]=0xEF;
+	keyaddr[ZX_KEY_9]=0xEF;
+	keyaddr[ZX_KEY_8]=0xEF;
+	keyaddr[ZX_KEY_7]=0xEF;
+	keyaddr[ZX_KEY_6]=0xEF;
 
-	keybuf[SDLK_0]=1;
-	keybuf[SDLK_9]=2;
-	keybuf[SDLK_8]=4;
-	keybuf[SDLK_7]=8;
-	keybuf[SDLK_6]=16;
+	keybuf[ZX_KEY_0]=1;
+	keybuf[ZX_KEY_9]=2;
+	keybuf[ZX_KEY_8]=4;
+	keybuf[ZX_KEY_7]=8;
+	keybuf[ZX_KEY_6]=16;
 
 	// 0xDFFE
-	keyaddr[SDLK_p]=0xDF;
-	keyaddr[SDLK_o]=0xDF;
-	keyaddr[SDLK_i]=0xDF;
-	keyaddr[SDLK_u]=0xDF;
-	keyaddr[SDLK_y]=0xDF;
+	keyaddr[ZX_KEY_P]=0xDF;
+	keyaddr[ZX_KEY_O]=0xDF;
+	keyaddr[ZX_KEY_I]=0xDF;
+	keyaddr[ZX_KEY_U]=0xDF;
+	keyaddr[ZX_KEY_Y]=0xDF;
 
-	keybuf[SDLK_p]=1;
-	keybuf[SDLK_o]=2;
-	keybuf[SDLK_i]=4;
-	keybuf[SDLK_u]=8;
-	keybuf[SDLK_y]=16;
+	keybuf[ZX_KEY_P]=1;
+	keybuf[ZX_KEY_O]=2;
+	keybuf[ZX_KEY_I]=4;
+	keybuf[ZX_KEY_U]=8;
+	keybuf[ZX_KEY_Y]=16;
 
 	// 0xBFFE
-	keyaddr[SDLK_RETURN]=0xBF;
-	keyaddr[SDLK_l]=0xBF;
-	keyaddr[SDLK_k]=0xBF;
-	keyaddr[SDLK_j]=0xBF;
-	keyaddr[SDLK_h]=0xBF;
+	keyaddr[ZX_KEY_ENTER]=0xBF;
+	keyaddr[ZX_KEY_L]=0xBF;
+	keyaddr[ZX_KEY_K]=0xBF;
+	keyaddr[ZX_KEY_J]=0xBF;
+	keyaddr[ZX_KEY_H]=0xBF;
 
-	keybuf[SDLK_RETURN]=1;
-	keybuf[SDLK_l]=2;
-	keybuf[SDLK_k]=4;
-	keybuf[SDLK_j]=8;
-	keybuf[SDLK_h]=16;
+	keybuf[ZX_KEY_ENTER]=1;
+	keybuf[ZX_KEY_L]=2;
+	keybuf[ZX_KEY_K]=4;
+	keybuf[ZX_KEY_J]=8;
+	keybuf[ZX_KEY_H]=16;
 
 	// 0x7FFE
-	keyaddr[SDLK_SPACE]=0x7F;
-	keyaddr[SDLK_LCTRL]=0x7F;
-	keyaddr[SDLK_RCTRL]=0x7F;
-	keyaddr[SDLK_m]=0x7F;
-	keyaddr[SDLK_n]=0x7F;
-	keyaddr[SDLK_b]=0x7F;
+	keyaddr[ZX_KEY_SPACE]=0x7F;
+	keyaddr[ZX_KEY_SYM]=0x7F;
+	keyaddr[ZX_KEY_M]=0x7F;
+	keyaddr[ZX_KEY_N]=0x7F;
+	keyaddr[ZX_KEY_B]=0x7F;
 
-	keybuf[SDLK_SPACE]=1;
-	keybuf[SDLK_LCTRL]=2;
-	keybuf[SDLK_RCTRL]=2;
-	keybuf[SDLK_m]=4;
-	keybuf[SDLK_n]=8;
-	keybuf[SDLK_b]=16;
+	keybuf[ZX_KEY_SPACE]=1;
+	keybuf[ZX_KEY_SYM]=2;
+	keybuf[ZX_KEY_M]=4;
+	keybuf[ZX_KEY_N]=8;
+	keybuf[ZX_KEY_B]=16;
 
 	keysetup = 1;
 
@@ -203,28 +197,6 @@ void ZX_Input(void) {
 	if(!keysetup)
 		ZX_KeyInit();
 
-	SDL_Event event;
-	while(SDL_PollEvent(&event)) {
-		switch(event.type) {
-			case SDL_KEYDOWN:
-				indata[keyaddr[event.key.keysym.sym]]&=~keybuf[event.key.keysym.sym];
-				//printf("%d %d\n",event.key.keysym.sym,indata[keyaddr[event.key.keysym.sym]]);
-				if(event.key.keysym.sym == SDLK_ESCAPE) {
-					debug = 1;
-				}
-				if(event.key.keysym.sym == SDLK_TAB) {
-					debug = 0;
-				}
-
-				break;
-			case SDL_KEYUP:
-				indata[keyaddr[event.key.keysym.sym]]|=keybuf[event.key.keysym.sym];
-				break;
-
-			case SDL_QUIT:
-				running=0;
-		}
-	}
-	return;
+	OSD_Input();
 }
 

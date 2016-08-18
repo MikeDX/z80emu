@@ -1,8 +1,17 @@
+/* zxvid.c
+ * 
+ * ZX Spectrum emulator 
+ * Copyright (c) 2016 MikeDX
+ *
+ * Cross platform ZX Spectrum emulator
+ * 
+ * Video handling routines.
+ */
+
 #include "zxem.h"
 
-SDL_Color colours[16];
-
 int ZX_SetPalette(void) {
+
 
 /* Normal Colours */
 	colours[0].r=0;
@@ -70,11 +79,15 @@ int ZX_SetPalette(void) {
 	colours[15].g=0xFF;
 	colours[15].b=0xFF;
 
-	SDL_SetPalette(screen,SDL_LOGPAL|SDL_PHYSPAL,colours,0,16);
+
+	OSD_SetPalette();
 	
 	return 1;
 
 }
+
+// TODO:
+// Updated video buffer on scaline beam
 
 void ZX_Draw(void) {
 	/* Draw the screen */
@@ -117,7 +130,7 @@ void ZX_Draw(void) {
 		for ( x=0;x<32;x++ ) {
 
 			// Buf Addr is the first pixel we want to draw on
-			buf_addr = (y*8)*screen->pitch + x*8;
+			buf_addr = (y*8)*256+x*8;
 
 			// Get Attribute
 			attrib = zxmem[attrib_addr];
@@ -177,15 +190,7 @@ void ZX_Draw(void) {
 		}
 
 	}
-	/* TODO - Call the actual screen render elsewhere */
-	SDL_LockSurface(screen);
-	uint8_t *pixels = screen->pixels;
-	for(y=0;y<192;y++) {
-		memcpy(pixels,&screenbuf[y*256],256);
-		pixels+=screen->pitch;
-	}	
-	SDL_UnlockSurface(screen);
-	SDL_Flip(screen);
+
 	memset(&cached[16384],0,6912);
 
 	// Flash flip changes every 16 frames
@@ -194,5 +199,8 @@ void ZX_Draw(void) {
 		flash_flip = !flash_flip;
 		flash_count = 0;
 	}
+
+	// Draw the screen
+	OSD_RenderScreen();
 }
 
