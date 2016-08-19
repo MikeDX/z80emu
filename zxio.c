@@ -54,6 +54,7 @@ uint8_t input(uint16_t port) {
 		case 0xBF:
 		case 0x7F:
 			data = indata[regb];
+//			printf("Indata: %d\n",indata[regb]);
 			return data;
 			break;
 		default: 
@@ -193,10 +194,6 @@ void ZX_KeyInit(void) {
 
 
 void ZX_Input(void) {
-	// Handle SDL
-	if(!keysetup)
-		ZX_KeyInit();
-
 	OSD_Input();
 }
 

@@ -153,6 +153,8 @@ int ZX_main(int argc, char *argv[])
 	int i =0;
 	
 	OSD_Init();
+	ZX_KeyInit();
+	
 	/* Create 8 bit buffer */
 	/* Spectrum screen is 32*8 by 24*8 */
 
