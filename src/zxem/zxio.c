@@ -5,15 +5,11 @@
 // Verbose for no reason.
 
 
-uint8_t keysetup = 0;
-
 uint8_t readbyte(uint16_t addr) {
-//	printf("Reading 0x%X\n",addr);
     return zxmem[addr];
 }
 
 uint16_t readword(uint16_t addr) {
-//	printf("Reading 0x%X\n",addr);
     return zxmem[addr] | zxmem[addr+1]<<8;
 }
 
@@ -42,7 +38,7 @@ void writeword(uint16_t addr, uint16_t data) {
 uint8_t zx_data =0;
 /* TODO: Fix IN routine */
 uint8_t input(uint16_t port) {
-	uint8_t regb = zxcpu.registers.byte[Z80_B];
+	uint8_t regb = CPU_GetReg(CPU_Handle,"B");
 	uint8_t data = zx_data;
 	switch(regb) {
 		case 0xFE:
@@ -59,7 +55,7 @@ uint8_t input(uint16_t port) {
 			break;
 		default: 
 			printf("Reading port 0x%02x:%02x\n",regb,port);
-			printf("PC: %04X %d\n",zxcpu.pc, zxcpu.pc);
+			printf("PC: %04X %d\n",CPU_GetReg(CPU_Handle, "PC"), CPU_GetReg(CPU_Handle,"PC"));
 			break;
 	}
 
@@ -73,7 +69,7 @@ uint8_t input(uint16_t port) {
 void output(uint16_t port, uint8_t data) {
 //	indata[zxcpu.registers.byte[Z80_B]]=data;
 //	uint8_t data = 0xff;
-	printf("OUT %02X %02X %02X\n",zxcpu.registers.byte[Z80_B],port,data);
+	printf("OUT %02X %02X %02X\n",CPU_GetReg(CPU_Handle,"B"),port,data);
 //	zxcpu.r=data;
 //	indata[zxcpu.registers.byte[Z80_B]]=data;
 	zx_data = data;
@@ -186,8 +182,6 @@ void ZX_KeyInit(void) {
 	keybuf[ZX_KEY_M]=4;
 	keybuf[ZX_KEY_N]=8;
 	keybuf[ZX_KEY_B]=16;
-
-	keysetup = 1;
 
 	memset(indata,255,255);
 }
