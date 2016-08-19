@@ -1906,13 +1906,13 @@ emulate_next_instruction:
                                 int     d, x;
                                         
                                 if (registers == register_table) {
-
+                                //        printf("1909\n");
                                         d = HL;
 
                                         elapsed_cycles++;
 
                                 } else {
-
+                                //        printf("1915\n");
                                         Z80_FETCH_BYTE(pc, d);
                                         d = ((char) d) + HL_IX_IY;
 
@@ -1923,19 +1923,27 @@ emulate_next_instruction:
                                 }
 
                                 READ_BYTE(d, x);
+
+                                //printf("HL: %x F: %x x: %x d: %x opcode: %x Yop %x\n", HL, F, x, d, opcode, 1<<Y(opcode));
+
                                 x &= 1 << Y(opcode);
-                                F = (x ? 0 : Z80_Z_FLAG | Z80_P_FLAG)
+
+                                //printf("HL: %x F: %x x: %x d: %x opcode: %x Yop %x\n", HL, F, x, d, opcode, 1<<Y(opcode));
+
+                                F = (x ? 0 : Z80_Z_FLAG | Z80_P_FLAG);
+                                //printf("HL: %x F: %x x: %x d: %x opcode: %x Yop %x\n", HL, F, x, d, opcode, 1<<Y(opcode));
 
 #ifndef Z80_DOCUMENTED_FLAGS_ONLY
 
-                                        | (x & Z80_S_FLAG)
-                                        | (d & YX_FLAGS)
+                                        F|= (x & Z80_S_FLAG)
+                                        | (d & YX_FLAGS);
+                                //printf("HL: %x F: %x x: %x d: %x opcode: %x Yop %x\n", HL, F, x, d, opcode, 1<<Y(opcode));
 
 #endif
 
-                                        | Z80_H_FLAG
+                                        F|= Z80_H_FLAG
                                         | (F & Z80_C_FLAG);
-
+                                //printf("HL: %x F: %x x: %x d: %x opcode: %x Yop %x\n", HL, F, x, d, opcode, 1<<Y(opcode));
                                 break;
 
                         }

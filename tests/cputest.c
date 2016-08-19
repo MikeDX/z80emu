@@ -96,12 +96,14 @@ uint8_t input(uint16_t port) {
 			break;
 	}
 
-	data |= (0xe0); /* Set bits 5-7 - as reset above */
+	data |= (0xe0); // Set bits 5-7 - as reset above 
 //	data &= ~0x40;
 	// default
 
+*/
 	return 255;//data;//indata[regb];
 	//zx_data;
+
 }
 
 void output(uint16_t port, uint8_t data) {
@@ -271,7 +273,7 @@ int main(int argc, char *argv[]) {
 
 			printf("TSTATES: %d : %d\n", etstates, tstates);
 
-//			break;
+			break;
 		}
 	}
 	fclose(in);
