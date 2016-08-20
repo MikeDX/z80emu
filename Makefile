@@ -2,7 +2,7 @@
 OLEVEL = -O3 
 CFLAGS =  -Isrc/zxem -Isrc/osdep -Isrc/cpu -Wall -pedantic $(OLEVEL) -fomit-frame-pointer
 SDL = 1
-CC = g++
+CC = gcc
 #CPU = z80emu
 #CPU = mz80
 #CPU = deadz80
@@ -36,7 +36,7 @@ endif
 
 
 ifeq ($(PLAT), HTML)
-CC = em++
+CC = emcc
 AR = emar
 OSDFLAGS = -s USE_SDL=$(SDL)
 OSDLIBS = 
@@ -64,6 +64,17 @@ endif
 ifeq ($(CPU), z80core)
 CPUOBJ = $(OBJDIR)/z80core_Z80Core.o $(OBJDIR)/z80core_Z80Core_CBOpcodes.o $(OBJDIR)/z80core_Z80Core_DDCB_FDCBOpcodes.o $(OBJDIR)/z80core_Z80Core_DDOpcodes.o $(OBJDIR)/z80core_Z80Core_EDOpcodes.o $(OBJDIR)/z80core_Z80Core_FDOpcodes.o $(OBJDIR)/z80core_Z80Core_MainOpcodes.o
 CPUINTC = src/cpu/z80core/cpuintf.c
+
+# add permissive for initialising members in class definitions (Z80Core.h) 
+CFLAGS += -fpermissive
+
+#compile as c++ when using z80 core
+ifeq ($(PLAT), HTML) 
+CC = em++
+else
+CC = g++
+endif
+
 endif
 
 
@@ -91,7 +102,7 @@ $(OBJDIR)/deadz80.o: src/cpu/deadz80/deadz80.c src/cpu/deadz80/deadz80.h src/cpu
 
 # Z80CORE - SUCCESS!
 $(OBJDIR)/z80core_%.o: src/cpu/z80core/%.cpp
-	$(CC) $(CFLAGS) -c -fpermissive $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 #$(OBJDIR)/z80core.a: src/cpu/z80core/Z80Core.o src/cpu/z80core/Z80Core_CBOpcodes.o src/cpu/z80core/Z80Core_DDCB_FDCBOpcodes.o src/cpu/z80core/Z80Core_DDOpcodes.o src/cpu/z80core/Z80Core_EDOpcodes.o src/cpu/z80core/Z80Core_FDOpcodes.o src/cpu/z80core/Z80Core_MainOpcodes.o
 #	$(AR) cr $@ src/cpu/z80core/*.o
