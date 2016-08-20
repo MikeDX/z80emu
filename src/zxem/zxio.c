@@ -61,10 +61,8 @@ uint8_t input(uint16_t port) {
 	}
 
 	data |= (0xe0); /* Set bits 5-7 - as reset above */
-//	data &= ~0x40;
-	// default
-	return 255;//data;//indata[regb];
-	//zx_data;
+	data &= ~0x40;
+	return data;
 }
 
 void output(uint16_t port, uint8_t data) {
