@@ -9,6 +9,9 @@
 
 #define GLOBALS
 #include "zxem.h"
+#ifdef EMSCRIPTEN
+#include <emscripten.h>
+#endif
 
 double          total;
 int stopped;

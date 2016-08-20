@@ -39,6 +39,7 @@ uint8_t zx_data =0;
 /* TODO: Fix IN routine */
 uint8_t input(uint16_t port) {
 	uint8_t regb = CPU_GetReg(CPU_Handle,"B");
+//	printf("Reading %02X\n",regb);
 	uint8_t data = zx_data;
 	switch(regb) {
 		case 0xFE:

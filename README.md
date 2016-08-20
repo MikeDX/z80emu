@@ -1,13 +1,10 @@
 # ZXEMU
 
-Version 0.0.1  
+Version 0.0.2  
 https://github.com/MikeDX/z80emu/  
 Copyright (c) 2016 MikeDX  
 
-Uses z80emu Z80 Cpu Core  
-https://github.com/anotherlin/z80emu  
-Copyright (c) 2012-2014 Lin Ke-Fong  
-
+Uses Z80 Cpu Core by Adrian Brown 
 
 ZXEMU is a free open source cross platform ZX Spectrum emulator, currently work in progress hoping to support various models of ZX Spectrum.
 

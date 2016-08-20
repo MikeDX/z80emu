@@ -3,8 +3,10 @@ OLEVEL = -O3
 CFLAGS =  -Isrc/zxem -Isrc/osdep -Isrc/cpu -Wall -pedantic $(OLEVEL) -fomit-frame-pointer
 SDL = 1
 CC = g++
-CPU = z80emu
+#CPU = z80emu
 #CPU = mz80
+#CPU = deadz80
+CPU = z80core
 
 TARGET = zxem
 TEST_TARGET = tests/zxtest
@@ -34,7 +36,8 @@ endif
 
 
 ifeq ($(PLAT), HTML)
-CC = emcc
+CC = em++
+AR = emar
 OSDFLAGS = -s USE_SDL=$(SDL)
 OSDLIBS = 
 OLEVEL += -s ASM_JS=1 
@@ -53,6 +56,16 @@ CPUOBJ = $(OBJDIR)/mz80.o
 CPUINTC = src/cpu/mz80/cpuintf.c
 endif
 
+ifeq ($(CPU), deadz80)
+CPUOBJ = $(OBJDIR)/deadz80.o
+CPUINTC = src/cpu/deadz80/cpuintf.c
+endif
+
+ifeq ($(CPU), z80core)
+CPUOBJ = $(OBJDIR)/z80core_Z80Core.o $(OBJDIR)/z80core_Z80Core_CBOpcodes.o $(OBJDIR)/z80core_Z80Core_DDCB_FDCBOpcodes.o $(OBJDIR)/z80core_Z80Core_DDOpcodes.o $(OBJDIR)/z80core_Z80Core_EDOpcodes.o $(OBJDIR)/z80core_Z80Core_FDOpcodes.o $(OBJDIR)/z80core_Z80Core_MainOpcodes.o
+CPUINTC = src/cpu/z80core/cpuintf.c
+endif
+
 
 all: $(OBJDIR) $(TARGET) 
 
@@ -68,6 +81,15 @@ $(OBJDIR)/z80emu.o: src/cpu/z80emu/z80emu.c src/cpu/z80emu/z80emu.h src/cpu/z80e
 
 $(OBJDIR)/mz80.o: src/cpu/mz80/mz80.c src/cpu/mz80/mz80.h src/cpu/cpuintf.h
 	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJDIR)/deadz80.o: src/cpu/deadz80/deadz80.c src/cpu/deadz80/deadz80.h src/cpu/deadz80/opcodes.h src/cpu/cpuintf.h
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJDIR)/z80core_%.o: src/cpu/z80core/%.cpp
+	$(CC) $(CFLAGS) -c $< -o $@
+
+#$(OBJDIR)/z80core.a: src/cpu/z80core/Z80Core.o src/cpu/z80core/Z80Core_CBOpcodes.o src/cpu/z80core/Z80Core_DDCB_FDCBOpcodes.o src/cpu/z80core/Z80Core_DDOpcodes.o src/cpu/z80core/Z80Core_EDOpcodes.o src/cpu/z80core/Z80Core_FDOpcodes.o src/cpu/z80core/Z80Core_MainOpcodes.o
+#	$(AR) cr $@ src/cpu/z80core/*.o
 
 $(OBJDIR)/zxem.o: src/zxem/zxem.c src/zxem/zxem.h src/osdep/osdep.h
 	$(CC) $(CFLAGS) $(OSDFLAGS) -c $< -o $@
