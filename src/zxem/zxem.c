@@ -9,6 +9,9 @@
 
 #define GLOBALS
 #include "zxem.h"
+#ifdef EMSCRIPTEN
+#include <emscripten.h>
+#endif
 
 double          total;
 int stopped;
@@ -98,47 +101,19 @@ void ZX_End(void) {
 	OSD_Quit();
 }
 
-int oim  = 255;
 /* Handle Interrupt - called before each screen render */
 void ZX_Int(void) {
-	if(oim!=zxcpu.im) {
-		oim = zxcpu.im;
-		printf("New interrupt: MODE: %d ",zxcpu.im);
-		switch(oim) {
-			case Z80_INTERRUPT_MODE_0:
-				printf("mode 0\n");
-				break;
-			case Z80_INTERRUPT_MODE_1:
-				printf("mode 1\n");
-				break;
-			case Z80_INTERRUPT_MODE_2:
-				printf("mode 2\n");
-				break;
-			default:
-				printf("????\n");
-		}
-						
-	}
-
-//	if(zxcpu.status==Z80_STATUS_FLAG_HALT) {
-//		zxcpu.status&=~Z80_STATUS_FLAG_HALT;
-//		zxcpu.pc++;
-//	}
-
-	Z80Emulate(&zxcpu, Z80Interrupt(&zxcpu,0xff));
-
-
-////	Z80Emulate(&zxcpu, );
+	CPU_Interrupt(CPU_Handle);
 }
 
 int next_total = 0;
 
 void mainloop(void) {
 	if(!debug) {
-		total += Z80Emulate(&zxcpu, next_total-total);
+		total += CPU_Emulate(CPU_Handle, next_total-total);
 	} else {
-		total += Z80Emulate(&zxcpu, 1);
-		printf("PC: 0x%04X\n",zxcpu.pc);
+		total += CPU_Emulate(CPU_Handle, 1);
+//		printf("PC: 0x%04X\n",zxcpu.pc);
 	}
 	if(total>=next_total) {
 		next_total +=CYCLES_PER_STEP;
@@ -163,6 +138,9 @@ int ZX_main(int argc, char *argv[])
 	zxmem = (uint8_t *)malloc(65536);
 	cached = (uint8_t *)malloc(65536);
 	screenbuf = (uint8_t *)malloc(256*192);
+
+	// Create a z80 cpu instance
+	CPU_Handle = CPU_Create();
 
 	if(!zxmem || !cached) {
 		printf("Failed to allocate RAM\n");
@@ -195,16 +173,8 @@ int ZX_main(int argc, char *argv[])
 		}
 	}
 
-	Z80Reset(&zxcpu);
-	zxcpu.im = Z80_INTERRUPT_MODE_0;
-	zxcpu.memory = zxmem;
-	zxcpu.readbyte = readbyte;
-	zxcpu.readword = readword;
-	zxcpu.writeword = writeword;
-	zxcpu.writebyte = writebyte;
-	zxcpu.input = input;
-	zxcpu.output = output;
-	
+	CPU_Reset(CPU_Handle);
+
 	total = 0;
 	running = 1;
 	debug = 0;

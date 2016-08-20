@@ -111,7 +111,7 @@ void OSD_SetPalette(void) {
 void OSD_RenderScreen(void) {
 	int y;
 	SDL_LockSurface(screen);
-	uint8_t *pixels = screen->pixels;
+	uint8_t *pixels = (uint8_t*)screen->pixels;
 	for(y=0;y<192;y++) {
 		memcpy(pixels,&screenbuf[y*256],256);
 		pixels+=screen->pitch;

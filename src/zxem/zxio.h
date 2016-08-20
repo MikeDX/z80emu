@@ -5,6 +5,9 @@
 #ifndef _ZXIO_H_
 #define _ZXIO_H_
 
+GLOBAL uint8_t *zxmem;
+GLOBAL uint8_t *cached;
+
 enum {
 	ZX_KEY_SHIFT = 1,
 	ZX_KEY_Z,
@@ -61,6 +64,9 @@ enum {
 GLOBAL uint8_t indata[255];
 GLOBAL uint8_t keyaddr[ZX_KEY_LAST];
 GLOBAL uint8_t keybuf[ZX_KEY_LAST];
+
+// ZX IO functions (zxio.c)
+// memory calls
 
 // memory handling
 uint8_t readbyte(uint16_t addr);
