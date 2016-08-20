@@ -76,17 +76,22 @@ tables.h: maketables.c
 	$(CC) -Wall $< -o maketables
 	./maketables > $@
 
+# MULTI CPU CORE!
+# Z80EMU - BROKEN
 $(OBJDIR)/z80emu.o: src/cpu/z80emu/z80emu.c src/cpu/z80emu/z80emu.h src/cpu/z80emu/instructions.h src/cpu/z80emu/macros.h src/cpu/z80emu/tables.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
+# MZ80 - Issues on 64bit :(
 $(OBJDIR)/mz80.o: src/cpu/mz80/mz80.c src/cpu/mz80/mz80.h src/cpu/cpuintf.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
+# DEADZ80 - Dead?
 $(OBJDIR)/deadz80.o: src/cpu/deadz80/deadz80.c src/cpu/deadz80/deadz80.h src/cpu/deadz80/opcodes.h src/cpu/cpuintf.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
+# Z80CORE - SUCCESS!
 $(OBJDIR)/z80core_%.o: src/cpu/z80core/%.cpp
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c -fpermissive $< -o $@
 
 #$(OBJDIR)/z80core.a: src/cpu/z80core/Z80Core.o src/cpu/z80core/Z80Core_CBOpcodes.o src/cpu/z80core/Z80Core_DDCB_FDCBOpcodes.o src/cpu/z80core/Z80Core_DDOpcodes.o src/cpu/z80core/Z80Core_EDOpcodes.o src/cpu/z80core/Z80Core_FDOpcodes.o src/cpu/z80core/Z80Core_MainOpcodes.o
 #	$(AR) cr $@ src/cpu/z80core/*.o
