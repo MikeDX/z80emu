@@ -1,0 +1,6 @@
+{
+  "name": "ZXEM",
+  "tagline": "Open source portable free ZX Spectrum emulator",
+  "body": "# ZXEMU\r\n\r\nVersion 0.0.2  \r\nhttps://github.com/MikeDX/z80emu/  \r\nCopyright (c) 2016 MikeDX  \r\n\r\nUses Z80 Cpu Core by Adrian Brown \r\n\r\nZXEMU is a free open source cross platform ZX Spectrum emulator, currently work in progress hoping to support various models of ZX Spectrum.\r\n\r\n[Play online](http://js.mikedx.co.uk/zxem.html)\r\n\r\n[![Build Status](https://travis-ci.org/MikeDX/z80emu.svg?branch=master)](https://travis-ci.org/MikeDX/z80emu)\r\n\r\n## TODO list\r\n- [x] Working Z80 CPU Core  \r\n- [x] Screen renderer (pixels, ink, paper, bright, flash)\r\n- [x] Keyboard input  \r\n- [x] Spectrum 48k rom support  \r\n- [x] .scr image viewer\r\n- [x] Windows port  \r\n- [x] OSX port  \r\n- [x] Linux  \r\n- [x] Android port  \r\n- [x] Html/Javascript port  (compile with make PLAT=HTML)\r\n- [x] Raspberry Pi port  \r\n- [ ] 'BEEP' sound output  \r\n- [ ] Spectrum 128K support  \r\n- [ ] AY-3-8912 emulation  \r\n- [ ] Configurable gamepad  \r\n- [ ] TZX Support  \r\n- [ ] Z80 Snapshot support  \r\n- [ ] SNA Snapshot support  \r\n- [ ] TAP Support  \r\n\r\nPlease help to test and develop this project!\r\n",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
