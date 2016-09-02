@@ -1,0 +1,8 @@
+[submodule "src/thirdparty/SDL2"]
+	path = src/thirdparty/SDL2
+	url = https://github.com/SDL-mirror/SDL/
+	branch = 8c71c9d92bc42c19b5f98575fccf27f2f9cdd3b9 
+[submodule "src/thirdparty/SDL1.2"]
+	path = src/thirdparty/SDL1.2
+	url = https://github.com/SDL-mirror/SDL/
+	branch = SDL-1.2
