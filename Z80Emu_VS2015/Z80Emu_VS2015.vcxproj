@@ -1,0 +1,227 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C2E0BFA8-A887-4F90-A9A7-6199466C97C6}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Z80Emu_VS2015_2</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../src/zxem;../src/osdep;../src/cpu;..\;..\Win32\SDL-1.2.15\include</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\Win32\SDL-1.2.15\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sdl.lib;sdlmain.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../src/zxem;../src/osdep;../src/cpu;..\;..\Win32\SDL-1.2.15\include</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\Win32\SDL-1.2.15\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sdl.lib;sdlmain.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\cpu\cpuintf.h" />
+    <ClInclude Include="..\src\cpu\z80core\Z80Core.h" />
+    <ClInclude Include="..\src\cpu\z80core\Z80CoreOpcodeTables.h" />
+    <ClInclude Include="..\src\cpu\z80core\Z80Core_CBOpcodes.h" />
+    <ClInclude Include="..\src\cpu\z80core\Z80Core_CInterface.h" />
+    <ClInclude Include="..\src\cpu\z80core\Z80Core_DDCB_FDCBOpcodes.h" />
+    <ClInclude Include="..\src\cpu\z80core\Z80Core_DDOpcodes.h" />
+    <ClInclude Include="..\src\cpu\z80core\Z80Core_EDOpcodes.h" />
+    <ClInclude Include="..\src\cpu\z80core\Z80Core_FDOpcodes.h" />
+    <ClInclude Include="..\src\cpu\z80core\Z80Core_MainOpcodes.h" />
+    <ClInclude Include="..\src\osdep\osdep.h" />
+    <ClInclude Include="..\src\zxem\zxem.h" />
+    <ClInclude Include="..\src\zxem\zxio.h" />
+    <ClInclude Include="..\src\zxem\zxvid.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\begin_code.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\close_code.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_active.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_audio.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_byteorder.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_cdrom.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_config.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_config_dreamcast.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_config_macos.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_config_macosx.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_config_minimal.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_config_nds.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_config_os2.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_config_symbian.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_config_win32.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_copying.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_cpuinfo.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_endian.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_error.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_events.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_getenv.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_joystick.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_keyboard.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_keysym.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_loadso.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_main.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_mouse.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_mutex.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_name.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_opengl.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_platform.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_quit.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_rwops.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_stdinc.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_syswm.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_thread.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_timer.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_types.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_version.h" />
+    <ClInclude Include="..\Win32\SDL-1.2.15\include\SDL_video.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\cpu\z80core\cpuintf.c" />
+    <ClCompile Include="..\src\cpu\z80core\Z80Core.cpp" />
+    <ClCompile Include="..\src\cpu\z80core\Z80Core_CBOpcodes.cpp" />
+    <ClCompile Include="..\src\cpu\z80core\Z80Core_CInterface.cpp" />
+    <ClCompile Include="..\src\cpu\z80core\Z80Core_DDCB_FDCBOpcodes.cpp" />
+    <ClCompile Include="..\src\cpu\z80core\Z80Core_DDOpcodes.cpp" />
+    <ClCompile Include="..\src\cpu\z80core\Z80Core_EDOpcodes.cpp" />
+    <ClCompile Include="..\src\cpu\z80core\Z80Core_FDOpcodes.cpp" />
+    <ClCompile Include="..\src\cpu\z80core\Z80Core_MainOpcodes.cpp" />
+    <ClCompile Include="..\src\osdep\sdl1.2.c" />
+    <ClCompile Include="..\src\zxem\zxem.c" />
+    <ClCompile Include="..\src\zxem\zxio.c" />
+    <ClCompile Include="..\src\zxem\zxvid.c" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
