@@ -9,11 +9,11 @@
  */
 
 #include "zxem.h"
-#include "Z80Core.h"
+#include "Z80Core_CInterface.h"
 
 #define MAX_CPU 10
 
-CZ80Core *zxcpu[MAX_CPU];
+void *zxcpu[MAX_CPU];
 uint8_t num_cpus = -1;
 
 unsigned char coreRead(unsigned short addr, int param) {
@@ -41,8 +41,8 @@ void coreContention(unsigned short address, unsigned int tstates,int param) {
 uint8_t CPU_Create(void) {
 	num_cpus++;
 	if(num_cpus<MAX_CPU) {
-		zxcpu[num_cpus]=new CZ80Core;
-		zxcpu[num_cpus]->Initialise(coreRead,coreWrite,IORead,IOWrite,coreContention,coreContention,num_cpus);
+		zxcpu[num_cpus]=Z80CORE_Create();
+		Z80CORE_Initialise(zxcpu[num_cpus], coreRead,coreWrite,IORead,IOWrite,coreContention,coreContention,num_cpus);
 		return num_cpus;
 	} 
 
@@ -51,12 +51,12 @@ uint8_t CPU_Create(void) {
 
 // reset a CPU context
 void CPU_Reset(uint8_t cpuid) {
-	zxcpu[num_cpus]->Reset();
+	Z80CORE_Reset(zxcpu[num_cpus]);
 }
 
 // Destroy a CPU context
 void CPU_Destroy(uint8_t cpuid) {
-	delete(zxcpu[cpuid]);
+	Z80CORE_Destroy(zxcpu[cpuid]);
 	zxcpu[cpuid]=NULL;
 }
 
@@ -64,7 +64,7 @@ void CPU_Destroy(uint8_t cpuid) {
 int CPU_Emulate(uint8_t cpuid, int ticks) {
 //	int oticks = zxcpu[cpuid]->GetTStates();
 //	printf("Executing: %d\n",ticks);
-	return zxcpu[cpuid]->Execute(ticks);	
+	return Z80CORE_Execute(zxcpu[cpuid], ticks);	
 //	printf("Done!\n");
 //	return zxcpu[cpuid]->GetTStates()-oticks;
 }
@@ -74,10 +74,10 @@ int CPU_Emulate(uint8_t cpuid, int ticks) {
 void CPU_Interrupt(uint8_t cpuid) {
 
 //	printf("Interrupt!\n");
-	zxcpu[cpuid]->SignalInterrupt();
+	Z80CORE_SignalInterrupt(zxcpu[cpuid]);
 
 	// do we have to do anything else??
-	zxcpu[cpuid]->Execute(13);
+	Z80CORE_Execute(zxcpu[cpuid], 13);
 
 //	printf("Finished Interrupt!\n");
 }
@@ -94,10 +94,10 @@ uint16_t CPU_GetReg(uint8_t cpuid, char *reg) {
 //	printf("REG: %s %d\n",reg,creg);
 	switch(creg) {
 		case 66: // B
-			return zxcpu[cpuid]->GetRegister(CZ80Core::eREG_B);
+			return Z80CORE_GetByteRegister(zxcpu[cpuid], eREG_B);
 			break;
 		case 17232: // PC
-			return zxcpu[cpuid]->GetRegister(CZ80Core::eREG_SP);
+			return Z80CORE_GetWordRegister(zxcpu[cpuid], eREG_PC);
 			break;
 		default:
 			printf("Unimplemented reg return %s\n",reg);
