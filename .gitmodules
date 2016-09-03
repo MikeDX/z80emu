@@ -1,6 +1,6 @@
 [submodule "SDL1.2"]
 	path = src/thirdparty/SDL1.2
-	url = https://github.com/SDL-mirror/SDL/
+	url = https://github.com/MikeDX/SDL1.2
 [submodule "SDL2"]
 	path = src/thirdparty/SDL2
-	url = https://github.com/SDL-mirror/SDL/
+	url = https://github.com/MikeDX/SDL2
