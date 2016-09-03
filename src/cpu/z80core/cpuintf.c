@@ -88,6 +88,32 @@ void CPU_NMI(uint8_t cpuid) {
 }
 
 
+void CPU_SetReg(uint8_t cpuid, char *reg, uint16_t value) {
+
+	int creg = reg[0]+reg[1]*256;
+
+	switch(creg) {
+		case 66: // B
+			Z80CORE_SetByteRegister(zxcpu[cpuid], eREG_B, value);
+			return;
+			break;
+		case 73: // I
+			Z80CORE_SetByteRegister(zxcpu[cpuid], eREG_I, value);
+			return;
+			break;
+		case 17232: // PC
+			Z80CORE_SetWordRegister(zxcpu[cpuid], eREG_PC, value);
+			return;
+			break;
+
+		default: 
+			printf("Unimplemented reg [%s] (%d)\n",reg, creg);
+			return;
+
+	}
+
+}
+
 uint16_t CPU_GetReg(uint8_t cpuid, char *reg) {
 
 	int creg=reg[0]+reg[1]*256;

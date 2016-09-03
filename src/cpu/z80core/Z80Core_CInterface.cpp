@@ -69,6 +69,19 @@ unsigned short Z80CORE_GetWordRegister(void *core, eZ80WORDREGISTERS r)
 
 //-----------------------------------------------------------------------------------------
 
+void Z80CORE_SetByteRegister(void *core, eZ80BYTEREGISTERS r, unsigned char data) {
+	reinterpret_cast<CZ80Core *>(core)->SetRegister((CZ80Core::eZ80BYTEREGISTERS)r, data);
+}
+
+//-----------------------------------------------------------------------------------------
+
+void Z80CORE_SetWordRegister(void *core, eZ80WORDREGISTERS r, unsigned short data) {
+	reinterpret_cast<CZ80Core *>(core)->SetRegister((CZ80Core::eZ80WORDREGISTERS)r, data);
+}
+
+//-----------------------------------------------------------------------------------------
+
+
 }
 
 //-----------------------------------------------------------------------------------------
