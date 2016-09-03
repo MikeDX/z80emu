@@ -6,6 +6,8 @@
  *
  */
 
+#include "zxem.h"
+#include "mz80.h"
 
 // create CPU context and return a handle
 uint8_t CPU_Create(void) {

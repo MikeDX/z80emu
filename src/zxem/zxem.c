@@ -9,6 +9,8 @@
 
 #define GLOBALS
 #include "zxem.h"
+
+// TODO - Move emscripten to OSDEP
 #ifdef EMSCRIPTEN
 #include <emscripten.h>
 #endif
@@ -24,11 +26,8 @@ void scrloop(void) {
 		fread(&zxmem[16384+scri],1,1,scrf);
 		cached[16384+scri]=1;
 		scri++;
-		if(!(scri&0xF)) {
-			ZX_Draw();
-	//		return;
-		}
 	}
+	ZX_Draw();
 }
 
 int ZX_LoadSCR(char *path) {
@@ -46,12 +45,11 @@ int ZX_LoadSCR(char *path) {
 	for (i=0;i<768;i++) {
 		zxmem[j+i]=i&127;
 	}
-	while(running) {
-		ZX_Input();
-		ZX_Draw();
-	}
-	running = 1;
-//	memset(&zxmem[j],199,768);
+	// while(running) {
+	// 	ZX_Input();
+	// 	ZX_Draw();
+	// }
+	// running = 1;
 	memset(&cached[16384],1,6912);
 	// for(i=0;i<10;i++) {
 	// 	memset(&cached[16384],1,6912);
@@ -133,7 +131,7 @@ int ZX_main(int argc, char *argv[])
 	/* Create 8 bit buffer */
 	/* Spectrum screen is 32*8 by 24*8 */
 
-	OSD_SetVideoMode(256,192,0);
+	OSD_SetVideoMode(256+64,192+64,0);
 
 	zxmem = (uint8_t *)malloc(65536);
 	cached = (uint8_t *)malloc(65536);

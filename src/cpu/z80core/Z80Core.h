@@ -47,7 +47,7 @@ public:
 		eREG_ALT_L,
 
 		eREG_I,
-		eREG_R,
+		eREG_R
 	} eZ80BYTEREGISTERS;
 
 	typedef enum
@@ -64,7 +64,7 @@ public:
 		eREG_IX,
 		eREG_IY,
 		eREG_SP,
-		eREG_PC,
+		eREG_PC
 
 	} eZ80WORDREGISTERS;
 
@@ -82,7 +82,7 @@ public:
 	{
 		union
 		{
-			struct
+			struct 
 			{
 				// Start with the main regs
 				unsigned short	regAF;

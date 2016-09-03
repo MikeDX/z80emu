@@ -35,6 +35,12 @@
 
 #define Z80_CPU_SPEED           3500000   /* In Hz. */
 #define CYCLES_PER_STEP         69888
+
+#define SCREEN_W	256
+#define SCREENH		192
+#define SCREEN_VW	256+64
+#define SCREEN_VH	192+64
+#define BORDER_W	32
  //(Z80_CPU_SPEED / 50)
 
 
