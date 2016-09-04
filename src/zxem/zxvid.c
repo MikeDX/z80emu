@@ -28,7 +28,7 @@ int ZX_SetPalette(void) {
 			// set rgb of each colour from lookup
 			colours[i+b*8].r=lookup[i*3]*bright[b];
 			colours[i+b*8].g=lookup[i*3+1]*bright[b];
-			colours[i+b*8].b=lookup[i*3+1]*bright[b];		
+			colours[i+b*8].b=lookup[i*3+2]*bright[b];		
 		}
 	}
 
