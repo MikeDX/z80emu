@@ -92,11 +92,19 @@ void CPU_SetReg(uint8_t cpuid, char *reg, uint16_t value) {
 
 	int creg = reg[0]+reg[1]*256;
 
+	printf("SETREG: %s %d\n",reg, value);
+
 	switch(creg) {
 		case 66: // B
 			Z80CORE_SetByteRegister(zxcpu[cpuid], eREG_B, value);
 			return;
 			break;
+
+		case 82: // R
+			Z80CORE_SetByteRegister(zxcpu[cpuid], eREG_R, value);
+			return;
+			break;
+
 		case 73: // I
 			Z80CORE_SetByteRegister(zxcpu[cpuid], eREG_I, value);
 			return;
@@ -105,6 +113,62 @@ void CPU_SetReg(uint8_t cpuid, char *reg, uint16_t value) {
 			Z80CORE_SetWordRegister(zxcpu[cpuid], eREG_PC, value);
 			return;
 			break;
+
+		case 27752: // HL' (hl)
+			Z80CORE_SetWordRegister(zxcpu[cpuid], eREG_ALT_HL, value);
+			return;
+			break;
+
+		case 25956: // DE' (de)
+			Z80CORE_SetWordRegister(zxcpu[cpuid], eREG_ALT_DE, value);
+			return;
+			break;
+
+		case 25442: // BC' (bc)
+			Z80CORE_SetWordRegister(zxcpu[cpuid], eREG_ALT_BC, value);
+			return;
+			break;
+
+		case 26209: // AF' (af)
+			Z80CORE_SetWordRegister(zxcpu[cpuid], eREG_ALT_AF, value);
+			return;
+			break;
+
+		case 19528: // HL
+			Z80CORE_SetWordRegister(zxcpu[cpuid], eREG_HL, value);
+			return;
+			break;
+
+		case 17732: // DE
+			Z80CORE_SetWordRegister(zxcpu[cpuid], eREG_DE, value);
+			return;
+			break;
+
+		case 17218: // BC
+			Z80CORE_SetWordRegister(zxcpu[cpuid], eREG_BC, value);
+			return;
+			break;
+
+		case 22857: // IX
+			Z80CORE_SetWordRegister(zxcpu[cpuid], eREG_IX, value);
+			return;
+			break;
+
+		case 22601: // IY
+			Z80CORE_SetWordRegister(zxcpu[cpuid], eREG_IY, value);
+			return;
+			break;
+
+		case 17985: // AF
+			Z80CORE_SetWordRegister(zxcpu[cpuid], eREG_AF, value);
+			return;
+			break;
+
+		case 20563: // SP
+			Z80CORE_SetWordRegister(zxcpu[cpuid], eREG_SP, value);
+			return;
+			break;
+
 
 		default: 
 			printf("Unimplemented reg [%s] (%d)\n",reg, creg);

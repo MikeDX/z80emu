@@ -116,13 +116,16 @@ $(OBJDIR)/zxvid.o: src/zxem/zxvid.c src/zxem/zxem.h src/osdep/osdep.h
 $(OBJDIR)/zxio.o: src/zxem/zxio.c src/zxem/zxem.h src/osdep/osdep.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
+$(OBJDIR)/zxsna.o: src/zxem/zxsna.c src/zxem/zxem.h src/osdep/osdep.h
+	$(CC) $(CFLAGS) -c $< -o $@
+
 $(OBJDIR)/osdep.o: $(OSD_SOURCE) src/zxem/zxem.h src/osdep/osdep.h
 	$(CC) $(CFLAGS) $(OSDFLAGS) -c $(OSD_SOURCE) -o $@
 
 $(OBJDIR)/cpuintf.o: $(CPUINTC) 
 	$(CC) $(CFLAGS) -c $< -o $@
 
-OBJECT_FILES = $(OBJDIR)/zxem.o $(CPUOBJ) $(OBJDIR)/zxvid.o $(OBJDIR)/zxio.o $(OBJDIR)/osdep.o $(OBJDIR)/cpuintf.o
+OBJECT_FILES = $(OBJDIR)/zxem.o $(CPUOBJ) $(OBJDIR)/zxvid.o $(OBJDIR)/zxio.o $(OBJDIR)/zxsna.o $(OBJDIR)/osdep.o $(OBJDIR)/cpuintf.o
 
 $(TARGET): $(OBJECT_FILES)
 	$(CC) $(CFLAGS) $(OBJECT_FILES) $(OSDLIBS) $(LINKFLAGS) -o $@

@@ -150,7 +150,7 @@ int ZX_main(int argc, char *argv[])
 	// Clear main memory
 	memset(zxmem,0,65535);
 
-	// Clear cached memory
+	// mark all cached memory as dirty
 	memset(cached,1,65535);
 
 	// Attempt to load spectrum ROM
@@ -160,20 +160,29 @@ int ZX_main(int argc, char *argv[])
 
 	ZX_SetPalette();
 
+	// if(argc>1) {
+	// 	running = 1;
+	// 	i = 0;
+	// 	while(++i<argc) {
+	// 		printf("Loading screen: %s\n",argv[i]);
+	// 		ZX_LoadSCR(argv[i]);
+	// 		// while(running) {
+	// 		// 	ZX_Draw();
+	// 		// 	ZX_Input();
+	// 		// }
+	// 	}
+	// }
+
+	// important to reset the CPU before we load any snapshots
+	// so that registers arent reset
+	CPU_Reset(CPU_Handle);
+
 	if(argc>1) {
-		running = 1;
-		i = 0;
-		while(++i<argc) {
-			printf("Loading screen: %s\n",argv[i]);
-			ZX_LoadSCR(argv[i]);
-			// while(running) {
-			// 	ZX_Draw();
-			// 	ZX_Input();
-			// }
+		ZX_LoadSNA(argv[1]);
+		while(1) {
+			ZX_Draw();
 		}
 	}
-
-	CPU_Reset(CPU_Handle);
 
 	total = 0;
 	running = 1;
