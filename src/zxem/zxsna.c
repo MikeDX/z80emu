@@ -48,31 +48,31 @@ int ZX_LoadSNA(char *filename) {
 	ival = snablock[0];
 	CPU_SetReg(CPU_Handle, (char *)"I", ival);
 
-	ival = snablock[2]+snablock[1]*256;
+	ival = snablock[1]+snablock[2]*256;
 	CPU_SetReg(CPU_Handle, (char *)"hl", ival);
 
-	ival = snablock[4]+snablock[3]*256;
+	ival = snablock[3]+snablock[4]*256;
 	CPU_SetReg(CPU_Handle, (char *)"de", ival);
 
-	ival = snablock[6]+snablock[5]*256;
+	ival = snablock[5]+snablock[6]*256;
 	CPU_SetReg(CPU_Handle, (char *)"bc", ival);
 
 	ival = snablock[8]+snablock[7]*256;
 	CPU_SetReg(CPU_Handle, (char *)"af", ival);
 
-	ival = snablock[10]+snablock[9]*256;
+	ival = snablock[9]+snablock[10]*256;
 	CPU_SetReg(CPU_Handle, (char *)"HL", ival);
 
-	ival = snablock[12]+snablock[11]*256;
+	ival = snablock[11]+snablock[12]*256;
 	CPU_SetReg(CPU_Handle, (char *)"DE", ival);
 
-	ival = snablock[14]+snablock[13]*256;
+	ival = snablock[13]+snablock[14]*256;
 	CPU_SetReg(CPU_Handle, (char *)"BC", ival);
 
-	ival = snablock[16]+snablock[15]*256;
+	ival = snablock[15]+snablock[16]*256;
 	CPU_SetReg(CPU_Handle, (char *)"IY", ival);
 
-	ival = snablock[18]+snablock[17]*256;
+	ival = snablock[17]+snablock[18]*256;
 	CPU_SetReg(CPU_Handle, (char *)"IX", ival);
 
 	// byte 19 is interrupt bit - TODO
@@ -80,14 +80,14 @@ int ZX_LoadSNA(char *filename) {
 	ival = snablock[20];
 	CPU_SetReg(CPU_Handle, (char *)"R", ival);
 
-	ival = snablock[22]+snablock[21]*256;
+	ival = snablock[21]+snablock[22]*256;
 	CPU_SetReg(CPU_Handle, (char *)"AF", ival);
 
-	ival = snablock[24]+snablock[23]*256;
+	ival = snablock[23]+snablock[24]*256;
 	CPU_SetReg(CPU_Handle, (char *)"SP", ival);
 
 	if(flen>49179) {
-		ival = snablock[49180]+snablock[49179]*256;
+		ival = snablock[49179]+snablock[49180]*256;
 		CPU_SetReg(CPU_Handle, (char *)"PC", ival);
 	} else {
 		// 48k SNA.. TO DO

@@ -179,9 +179,9 @@ int ZX_main(int argc, char *argv[])
 
 	if(argc>1) {
 		ZX_LoadSNA(argv[1]);
-		while(1) {
-			ZX_Draw();
-		}
+		// while(1) {
+		// 	ZX_Draw();
+		// }
 	}
 
 	total = 0;
