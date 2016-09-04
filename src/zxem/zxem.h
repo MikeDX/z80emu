@@ -33,6 +33,9 @@
 // ZX Video Hardware
 #include "zxvid.h"
 
+// SNA Snapshot support
+#include "zxsna.h"
+
 #define Z80_CPU_SPEED           3500000   /* In Hz. */
 #define CYCLES_PER_STEP         69888
  //(Z80_CPU_SPEED / 50)

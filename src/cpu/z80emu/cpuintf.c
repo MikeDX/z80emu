@@ -67,7 +67,7 @@ int oim;
 void CPU_Interrupt(uint8_t cpuid) {
 	if(oim!=zxcpu[cpuid]->im) {
 		oim = zxcpu[cpuid]->im;
-		printf("New interrupt: MODE: %d ",zxcpu[cpuid]->im);
+		printf("New interrupt: MODE: %d ",oim);
 		switch(oim) {
 			case Z80_INTERRUPT_MODE_0:
 				printf("mode 0\n");
@@ -93,6 +93,27 @@ void CPU_NMI(uint8_t cpuid) {
 	// TODO
 }
 
+void CPU_SetReg(uint8_t cpuid, char *reg, uint16_t value) {
+
+	int creg = reg[0]+reg[1]*256;
+
+	switch(creg) {
+		case 66:
+			zxcpu[cpuid]->registers.byte[Z80_B]=value;
+			return;
+			break;
+		case 17232:
+			zxcpu[cpuid]->pc = value;
+			return;
+			break;
+
+		default: 
+			printf("Unimplemented reg [%s] (%d)\n",reg, creg);
+			return 0;
+
+	}
+
+}
 
 uint16_t CPU_GetReg(uint8_t cpuid, char *reg) {
 
@@ -106,7 +127,7 @@ uint16_t CPU_GetReg(uint8_t cpuid, char *reg) {
 			return zxcpu[cpuid]->pc;
 			break;
 		default:
-			printf("Unimplemented reg return %s\n",reg);
+			printf("Unimplemented reg [%s] (%d)\n",reg, creg);
 			return 0;
 	}
 }
