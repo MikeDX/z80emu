@@ -35,12 +35,12 @@ void writeword(uint16_t addr, uint16_t data) {
 
 }
 
-uint8_t zx_data =0;
+uint8_t zx_data[65535];
 /* TODO: Fix IN routine */
 uint8_t input(uint16_t port) {
 	uint8_t regb = CPU_GetReg(CPU_Handle,"B");
 //	printf("Reading %02X\n",regb);
-	uint8_t data = zx_data;
+	uint8_t data = zx_data[port];
 	switch(regb) {
 		case 0xFE:
 		case 0xFD:
@@ -52,15 +52,17 @@ uint8_t input(uint16_t port) {
 		case 0x7F:
 			data = indata[regb];
 //			printf("Indata: %d\n",indata[regb]);
-			return data;
+//			return data;
 			break;
 		default: 
-			printf("Reading port 0x%02x:%02x\n",regb,port);
+			printf("Reading port 0x%02x:%02x %02x\n",regb,port,data);
 			printf("PC: %04X %d\n",CPU_GetReg(CPU_Handle, "PC"), CPU_GetReg(CPU_Handle,"PC"));
+//			return 255;
+			data = 255-31;
 			break;
 	}
 
-	data |= (0xe0); /* Set bits 5-7 - as reset above */
+//	data |= (0xe0); /* Set bits 5-7 - as reset above */
 	data &= ~0x40;
 	return data;
 }
@@ -68,10 +70,10 @@ uint8_t input(uint16_t port) {
 void output(uint16_t port, uint8_t data) {
 //	indata[zxcpu.registers.byte[Z80_B]]=data;
 //	uint8_t data = 0xff;
-	printf("OUT %02X %02X %02X\n",CPU_GetReg(CPU_Handle,"B"),port,data);
+//	printf("OUT %02X %02X %02X\n",CPU_GetReg(CPU_Handle,"B"),port,data);
 //	zxcpu.r=data;
 //	indata[zxcpu.registers.byte[Z80_B]]=data;
-	zx_data = data;
+	zx_data[port] = data;
 
 }
 // Setup keyboard array

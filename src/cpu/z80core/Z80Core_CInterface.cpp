@@ -81,7 +81,11 @@ void Z80CORE_SetWordRegister(void *core, eZ80WORDREGISTERS r, unsigned short dat
 
 //-----------------------------------------------------------------------------------------
 
-
+void Z80CORE_SetIMMode(void *core, unsigned char mode) {
+	reinterpret_cast<CZ80Core *>(core)->SetIMMode(mode);
 }
 
+
 //-----------------------------------------------------------------------------------------
+
+}

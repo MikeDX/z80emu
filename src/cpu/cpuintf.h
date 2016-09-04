@@ -16,6 +16,7 @@ void CPU_Destroy(uint8_t cpuid);
 void CPU_Interrupt(uint8_t cpuid);
 void CPU_NMI(uint8_t cpuid);
 int CPU_Emulate(uint8_t cpuid, int ticks);
+void CPU_SetIMode(uint8_t cpuid, uint8_t mode);
 void CPU_SetReg(uint8_t cpuid, char *reg, uint16_t value);
 uint16_t CPU_GetReg(uint8_t cpuid, char *reg);
 

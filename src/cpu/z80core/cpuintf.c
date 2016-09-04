@@ -87,6 +87,10 @@ void CPU_NMI(uint8_t cpuid) {
 	// TODO
 }
 
+void CPU_SetIMode(uint8_t cpuid, uint8_t mode) {
+	printf("Setting Interrupt mode to: %d\n",mode);
+	Z80CORE_SetIMMode(zxcpu[cpuid], mode);
+}
 
 void CPU_SetReg(uint8_t cpuid, char *reg, uint16_t value) {
 

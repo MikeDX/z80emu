@@ -77,6 +77,11 @@ int ZX_LoadSNA(char *filename) {
 
 	// byte 19 is interrupt bit - TODO
 
+	printf("Interrupt BIT: %02x\n",snablock[19]);
+
+	//if(snablock[19]&4)
+
+
 	ival = snablock[20];
 	CPU_SetReg(CPU_Handle, (char *)"R", ival);
 
@@ -85,6 +90,14 @@ int ZX_LoadSNA(char *filename) {
 
 	ival = snablock[23]+snablock[24]*256;
 	CPU_SetReg(CPU_Handle, (char *)"SP", ival);
+
+	// byte 25 is interrupt mode - TODO
+
+	printf("Interrupt MODE: %02x\n",snablock[25]);
+
+	CPU_SetIMode(CPU_Handle, snablock[25]);
+
+	//if(snablock[19]&4)
 
 	if(flen>49179) {
 		ival = snablock[49179]+snablock[49180]*256;

@@ -74,6 +74,7 @@ unsigned char Z80CORE_GetByteRegister(void *core, eZ80BYTEREGISTERS r);
 unsigned short Z80CORE_GetWordRegister(void *core, eZ80WORDREGISTERS r);
 void Z80CORE_SetByteRegister(void *core, eZ80BYTEREGISTERS r, unsigned char data);
 void Z80CORE_SetWordRegister(void *core, eZ80WORDREGISTERS r, unsigned short data);
+void Z80CORE_SetIMMode(void *core, unsigned char mode);
 
 //-----------------------------------------------------------------------------------------
 
