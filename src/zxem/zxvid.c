@@ -12,73 +12,25 @@
 
 int ZX_SetPalette(void) {
 
+	// colour table lookup
+	uint8_t lookup[]={0,0,0, 0,0,1, 1,0,0, 1,0,1, 0,1,0, 0,1,1, 1,1,0, 1,1,1};
 
-/* Normal Colours */
-	colours[0].r=0;
-	colours[0].g=0;
-	colours[0].b=0;
+	// Brightness. 0xD7 for normal and 0xFF for bright
+	uint8_t bright[]={0xD7, 0xFF};
 
-	colours[1].r=0;
-	colours[1].g=0;
-	colours[1].b=0xD7;
-	
-	colours[2].r=0xD7;
-	colours[2].g=0;
-	colours[2].b=0;
+	int i;
+	int b;
 
-	colours[3].r=0xD7;
-	colours[3].g=0;
-	colours[3].b=0xD7;
-
-	colours[4].r=0;
-	colours[4].g=0xD7;
-	colours[4].b=0;
-
-	colours[5].r=0;
-	colours[5].g=0xD7;
-	colours[5].b=0xD7;
-
-	colours[6].r=0xD7;
-	colours[6].g=0xD7;
-	colours[6].b=0;
-
-	colours[7].r=0xD7;
-	colours[7].g=0xD7;
-	colours[7].b=0xD7;
-
-/* Bright Colours */
-	colours[8].r=0;
-	colours[8].g=0;
-	colours[8].b=0;
-
-	colours[9].r=0;
-	colours[9].g=0;
-	colours[9].b=0xFF;
-	
-	colours[10].r=0xFF;
-	colours[10].g=0;
-	colours[10].b=0;
-
-	colours[11].r=0xFF;
-	colours[11].g=0;
-	colours[11].b=0xFF;
-
-	colours[12].r=0;
-	colours[12].g=0xFF;
-	colours[12].b=0;
-
-	colours[13].r=0;
-	colours[13].g=0xFF;
-	colours[13].b=0xFF;
-
-	colours[14].r=0xFF;
-	colours[14].g=0xFF;
-	colours[14].b=0;
-
-	colours[15].r=0xFF;
-	colours[15].g=0xFF;
-	colours[15].b=0xFF;
-
+	// bright and normal
+	for(b=0;b<2;b++) {
+		// 8 colours in each set
+		for(i=0;i<8;i++) {
+			// set rgb of each colour from lookup
+			colours[i+b*8].r=lookup[i*3]*bright[b];
+			colours[i+b*8].g=lookup[i*3+1]*bright[b];
+			colours[i+b*8].b=lookup[i*3+2]*bright[b];		
+		}
+	}
 
 	OSD_SetPalette();
 	

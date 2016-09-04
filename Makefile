@@ -62,7 +62,7 @@ CPUINTC = src/cpu/deadz80/cpuintf.c
 endif
 
 ifeq ($(CPU), z80core)
-CPUOBJ = $(OBJDIR)/z80core_Z80Core.o $(OBJDIR)/z80core_Z80Core_CBOpcodes.o $(OBJDIR)/z80core_Z80Core_DDCB_FDCBOpcodes.o $(OBJDIR)/z80core_Z80Core_DDOpcodes.o $(OBJDIR)/z80core_Z80Core_EDOpcodes.o $(OBJDIR)/z80core_Z80Core_FDOpcodes.o $(OBJDIR)/z80core_Z80Core_MainOpcodes.o
+CPUOBJ = $(OBJDIR)/z80core_Z80Core.o $(OBJDIR)/z80core_Z80Core_CBOpcodes.o $(OBJDIR)/z80core_Z80Core_DDCB_FDCBOpcodes.o $(OBJDIR)/z80core_Z80Core_DDOpcodes.o $(OBJDIR)/z80core_Z80Core_EDOpcodes.o $(OBJDIR)/z80core_Z80Core_FDOpcodes.o $(OBJDIR)/z80core_Z80Core_MainOpcodes.o $(OBJDIR)/z80core_Z80Core_CInterface.o
 CPUINTC = src/cpu/z80core/cpuintf.c
 
 # add permissive for initialising members in class definitions (Z80Core.h) 
