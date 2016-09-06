@@ -69,18 +69,75 @@ unsigned short Z80CORE_GetWordRegister(void *core, eZ80WORDREGISTERS r)
 
 //-----------------------------------------------------------------------------------------
 
-void Z80CORE_SetByteRegister(void *core, eZ80BYTEREGISTERS r, unsigned char data) {
+void Z80CORE_SetByteRegister(void *core, eZ80BYTEREGISTERS r, unsigned char data)
+{
 	reinterpret_cast<CZ80Core *>(core)->SetRegister((CZ80Core::eZ80BYTEREGISTERS)r, data);
 }
 
 //-----------------------------------------------------------------------------------------
 
-void Z80CORE_SetWordRegister(void *core, eZ80WORDREGISTERS r, unsigned short data) {
+void Z80CORE_SetWordRegister(void *core, eZ80WORDREGISTERS r, unsigned short data)
+{
 	reinterpret_cast<CZ80Core *>(core)->SetRegister((CZ80Core::eZ80WORDREGISTERS)r, data);
 }
 
 //-----------------------------------------------------------------------------------------
 
+unsigned char Z80CORE_GetIFF1(void *core)
+{
+	return reinterpret_cast<CZ80Core *>(core)->GetIFF1();
+}
+
+//-----------------------------------------------------------------------------------------
+
+unsigned char Z80CORE_GetIFF2(void *core)
+{
+	return reinterpret_cast<CZ80Core *>(core)->GetIFF2();
+}
+
+//-----------------------------------------------------------------------------------------
+
+unsigned char Z80CORE_GetIMMode(void *core)
+{
+	return reinterpret_cast<CZ80Core *>(core)->GetIMMode();
+}
+
+//-----------------------------------------------------------------------------------------
+
+unsigned int Z80CORE_GetTStates(void *core)
+{
+	return reinterpret_cast<CZ80Core *>(core)->GetTStates();
+}
+
+//-----------------------------------------------------------------------------------------
+
+void Z80CORE_ResetTStates(void *core, unsigned int count)
+{
+	reinterpret_cast<CZ80Core *>(core)->ResetTStates(count);
+}
+
+//-----------------------------------------------------------------------------------------
+
+void Z80CORE_SetIFF1(void *core, unsigned char iff1)
+{
+	reinterpret_cast<CZ80Core *>(core)->SetIFF1(iff1);
+}
+
+//-----------------------------------------------------------------------------------------
+
+void Z80CORE_SetIFF2(void *core, unsigned char iff2)
+{
+	reinterpret_cast<CZ80Core *>(core)->SetIFF2(iff2);
+}
+
+//-----------------------------------------------------------------------------------------
+
+void Z80CORE_SetIMMode(void *core, unsigned char immode)
+{
+	reinterpret_cast<CZ80Core *>(core)->SetIMMode(immode);
+}
+
+//-----------------------------------------------------------------------------------------
 
 }
 

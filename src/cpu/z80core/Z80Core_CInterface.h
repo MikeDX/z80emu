@@ -74,6 +74,14 @@ unsigned char Z80CORE_GetByteRegister(void *core, eZ80BYTEREGISTERS r);
 unsigned short Z80CORE_GetWordRegister(void *core, eZ80WORDREGISTERS r);
 void Z80CORE_SetByteRegister(void *core, eZ80BYTEREGISTERS r, unsigned char data);
 void Z80CORE_SetWordRegister(void *core, eZ80WORDREGISTERS r, unsigned short data);
+unsigned char Z80CORE_GetIFF1(void *core);
+unsigned char Z80CORE_GetIFF2(void *core);
+unsigned char Z80CORE_GetIMMode(void *core);
+unsigned int Z80CORE_GetTStates(void *core);
+void Z80CORE_ResetTStates(void *core, unsigned int count);
+void Z80CORE_SetIFF1(void *core, unsigned char iff1);
+void Z80CORE_SetIFF2(void *core, unsigned char iff2);
+void Z80CORE_SetIMMode(void *core, unsigned char immode);
 
 //-----------------------------------------------------------------------------------------
 
