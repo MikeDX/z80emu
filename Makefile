@@ -1,7 +1,7 @@
 # ZXEM MAKEFILE
 OLEVEL = -O3 
 CFLAGS =  -Isrc/zxem -Isrc/osdep -Isrc/cpu -Wall -pedantic $(OLEVEL) -fomit-frame-pointer
-SDL = 2
+SDL = 1
 ZCC = $(ZCC)
 #CPU = z80emu
 #CPU = mz80
