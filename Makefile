@@ -127,7 +127,7 @@ OBJECT_FILES = $(OBJDIR)/zxem.o $(CPUOBJ) $(OBJDIR)/zxvid.o $(OBJDIR)/zxio.o $(O
 $(TARGET): $(OBJECT_FILES)
 	$(ZCC) $(CFLAGS) $(OBJECT_FILES) $(OSDLIBS) $(LINKFLAGS) -o $@
 
-$(TEST_TARGET): tests/cputest.c z80emu.h $(OBJDIR)/z80emu.o
+$(TEST_TARGET): tests/cputest.c src/cpu/z80emu/z80emu.h $(OBJDIR)/z80emu.o
 	$(ZCC) $(CFLAGS) $< $(OBJDIR)/z80emu.o  -o $@
 
 

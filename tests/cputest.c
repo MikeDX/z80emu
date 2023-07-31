@@ -1,6 +1,6 @@
 // ZXTEST
 
-#include "../z80emu.h"
+#include "../src/cpu/z80emu/z80emu.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
