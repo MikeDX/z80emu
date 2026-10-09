@@ -13,6 +13,7 @@ uint8_t writes[65536];
 uint8_t reads[65536];
 
 int total, running, debug;
+int failed = 0;
 
 uint8_t readbyte(uint16_t addr) {
 //	printf("Reading 0x%X\n",addr);
@@ -273,6 +274,7 @@ int main(int argc, char *argv[]) {
 
 			printf("TSTATES: %d : %d\n", etstates, tstates);
 
+			failed = 1;
 			break;
 		}
 	}
@@ -281,6 +283,6 @@ int main(int argc, char *argv[]) {
 	printf("DONE\n");
 
 	free(zxmem);
-	return 0;
+	return failed;
 
 }
