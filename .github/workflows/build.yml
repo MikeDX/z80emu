@@ -1,0 +1,38 @@
+name: build
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: ${{ matrix.os }} / SDL ${{ matrix.sdl }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        sdl: [1, 2]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install SDL (Ubuntu)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y libsdl1.2-dev libsdl2-dev
+
+      - name: Install SDL (macOS)
+        if: runner.os == 'macOS'
+        run: brew install sdl12-compat sdl2
+
+      - name: Build
+        run: make SDL=${{ matrix.sdl }}
+
+      - name: Build z80emu CPU core
+        run: make clean && make CPU=z80emu SDL=${{ matrix.sdl }}
+
+      - name: CPU tests
+        run: make test
