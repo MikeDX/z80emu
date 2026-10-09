@@ -64,7 +64,7 @@ typedef enum
 
 //-----------------------------------------------------------------------------------------
 
-void *Z80CORE_Create();
+void *Z80CORE_Create(void);
 void Z80CORE_Destroy(void *core);
 void Z80CORE_Initialise(void *core, Z80CoreRead mem_read, Z80CoreWrite mem_write, Z80CoreRead io_read, Z80CoreWrite io_write, Z80CoreContention mem_contention_handling, Z80CoreContention io_contention_handling, int member_class);
 void Z80CORE_Reset(void *core);

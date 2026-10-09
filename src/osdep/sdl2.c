@@ -7,7 +7,7 @@
  * 
  * OSDEP file for SDL2
  */
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include "osdep.h"
 #include "zxem.h"
 

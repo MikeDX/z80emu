@@ -10,7 +10,26 @@ ZXEMU is a free open source cross platform ZX Spectrum emulator, currently work 
 
 [Play online](http://js.mikedx.co.uk/zxem.html)
 
-[![Build Status](https://travis-ci.org/MikeDX/z80emu.svg?branch=master)](https://travis-ci.org/MikeDX/z80emu)
+[![build](https://github.com/MikeDX/z80emu/actions/workflows/build.yml/badge.svg)](https://github.com/MikeDX/z80emu/actions/workflows/build.yml)
+
+## Building
+
+Install SDL 1.2 (or SDL2) first:
+
+- Ubuntu/Debian: `sudo apt-get install libsdl1.2-dev libsdl2-dev`
+- macOS (Homebrew): `brew install sdl12-compat sdl2`
+
+Then:
+
+```
+make            # zxem with SDL 1.2
+make SDL=2      # zxem with SDL2
+make DEBUG=1    # debug build
+make PLAT=HTML  # Emscripten build (zxem.html)
+make test       # build and run the CPU test suite
+```
+
+Run `./zxem` from the repository root (it loads `roms/48k.rom`).
 
 ## TODO list
 - [x] Working Z80 CPU Core  

@@ -248,13 +248,6 @@ typedef struct Z80_STATE_ {
  *                      register_table for 0xdd or 0xfd prefixes.
  */
 
-/* Here are macros for the zextest example. Read/write memory macros have been 
- * written for a linear 64k RAM. Input/output port macros are used to simulate 
- * system calls.
- */
-
-#include "zextest.h"
-
 #define Z80_FETCH_BYTE(address, x)                                      \
 {                                                                       \
         (x) = state->readbyte(address); \

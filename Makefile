@@ -1,136 +1,132 @@
 # ZXEM MAKEFILE
-OLEVEL = -O3 
-CFLAGS =  -Isrc/zxem -Isrc/osdep -Isrc/cpu -Wall -pedantic $(OLEVEL) -fomit-frame-pointer
-SDL = 1
-ZCC = $(ZCC)
-#CPU = z80emu
-#CPU = mz80
-#CPU = deadz80
-CPU = z80core
+#
+# make               native build (SDL 1.2, z80core CPU)
+# make SDL=2         build against SDL2
+# make SDL=0         build with the dummy (no video) backend
+# make DEBUG=1       debug build (-O0 -g)
+# make PLAT=HTML     Emscripten build (zxem.html)
+# make test          build and run the CPU test suite (z80emu core)
+
+## Config
+
+# CPU core: z80core (default), z80emu, mz80 (mz80 has issues on 64-bit)
+CPU ?= z80core
+SDL ?= 1
+PLAT ?= NATIVE
 
 TARGET = zxem
 TEST_TARGET = tests/zxtest
-OBJDIR = obj
-ifndef PLAT
-PLAT = NATIVE
-endif
+
+CPPFLAGS += -Isrc/zxem -Isrc/osdep -Isrc/cpu
+WARNINGS = -Wall -pedantic
+CFLAGS += $(WARNINGS) -fomit-frame-pointer
+CXXFLAGS += $(WARNINGS) -std=c++11 -fomit-frame-pointer
 
 ifdef DEBUG
 OLEVEL = -O0 -g
+else
+OLEVEL = -O2
 endif
+CFLAGS += $(OLEVEL)
+CXXFLAGS += $(OLEVEL)
 
-OSD_SOURCE = src/osdep/dummy.c
-
-ifdef SDL
-ifeq ($(SDL), 1)
-OSD_SOURCE = src/osdep/sdl1.2.c
-OSDFLAGS = $(shell sdl-config --cflags)
-OSDLIBS = $(shell sdl-config --libs)
-endif
-ifeq ($(SDL), 2)
-OSD_SOURCE = src/osdep/sdl2.c
-OSDFLAGS = $(shell sdl2-config --cflags)
-OSDLIBS = $(shell sdl2-config --libs)
-endif
-endif
-
+## Platform specific config
 
 ifeq ($(PLAT), HTML)
-ZCC = emcc
+CC = emcc
+CXX = em++
 AR = emar
-OSDFLAGS = -s USE_SDL=$(SDL)
-OSDLIBS = 
-OLEVEL += -s ASM_JS=1 
-LINKFLAGS = $(OSDFLAGS) $(OLEVEL) --preload-files roms/ --preload-files scr/ --emrun
-TARGET := $(TARGET).html
 OBJDIR = objhtml
-endif
-
-ifeq ($(CPU), z80emu)
-CPUOBJ = $(OBJDIR)/z80emu.o
-CPUINTC = src/cpu/z80emu/cpuintf.c
-endif
-
-ifeq ($(CPU), mz80)
-CPUOBJ = $(OBJDIR)/mz80.o
-CPUINTC = src/cpu/mz80/cpuintf.c
-endif
-
-ifeq ($(CPU), deadz80)
-CPUOBJ = $(OBJDIR)/deadz80.o
-CPUINTC = src/cpu/deadz80/cpuintf.c
-endif
-
-ifeq ($(CPU), z80core)
-CPUOBJ = $(OBJDIR)/z80core_Z80Core.o $(OBJDIR)/z80core_Z80Core_CBOpcodes.o $(OBJDIR)/z80core_Z80Core_DDCB_FDCBOpcodes.o $(OBJDIR)/z80core_Z80Core_DDOpcodes.o $(OBJDIR)/z80core_Z80Core_EDOpcodes.o $(OBJDIR)/z80core_Z80Core_FDOpcodes.o $(OBJDIR)/z80core_Z80Core_MainOpcodes.o $(OBJDIR)/z80core_Z80Core_CInterface.o
-CPUINTC = src/cpu/z80core/cpuintf.c
-
-# add permissive for initialising members in class definitions (Z80Core.h) 
-CFLAGS += -fpermissive
-
-#compile as c++ when using z80 core
-ifeq ($(PLAT), HTML) 
-ZCC = em++
+SDLFLAGS = -s USE_SDL=$(SDL)
+OSDLIBS =
+LINKFLAGS += $(SDLFLAGS) --preload-file roms --preload-file scr --emrun
+TARGET := $(TARGET).html
 else
-ZCC = $(CXX)
+OBJDIR = obj
 endif
 
+## OS dependent (video/input) backend
+
+ifeq ($(SDL), 1)
+OSD_SOURCE = src/osdep/sdl1.2.c
+ifneq ($(PLAT), HTML)
+SDLFLAGS = $(shell sdl-config --cflags)
+OSDLIBS = $(shell sdl-config --libs)
+endif
+else ifeq ($(SDL), 2)
+OSD_SOURCE = src/osdep/sdl2.c
+ifneq ($(PLAT), HTML)
+SDLFLAGS = $(shell sdl2-config --cflags)
+OSDLIBS = $(shell sdl2-config --libs)
+endif
+else
+OSD_SOURCE = src/osdep/dummy.c
 endif
 
+## Sources: every .c/.cpp in the selected CPU directory plus src/zxem.
+## Helper programs (maketables, zextest) live in src/cpu/z80emu/util so
+## they are not picked up here.
 
-all: $(OBJDIR) $(TARGET) 
+CPUSRC  := $(wildcard src/cpu/$(CPU)/*.c) $(wildcard src/cpu/$(CPU)/*.cpp)
+ZXEMSRC := $(wildcard src/zxem/*.c)
+
+obj_of = $(addprefix $(OBJDIR)/,$(addsuffix .o,$(subst /,_,$(patsubst src/%,%,$(basename $(1))))))
+
+CPUOBJ  := $(call obj_of,$(CPUSRC))
+ZXEMOBJ := $(call obj_of,$(ZXEMSRC))
+OSDOBJ  := $(OBJDIR)/osdep.o
+OBJECTS := $(ZXEMOBJ) $(CPUOBJ) $(OSDOBJ)
+
+HEADERS := $(wildcard src/*/*.h src/cpu/*/*.h)
+
+## Rules
+
+all: $(TARGET)
 
 $(OBJDIR):
-	mkdir $(OBJDIR)
+	mkdir -p $(OBJDIR)
 
-tables.h: maketables.c
-	$(ZCC) -Wall $< -o maketables
-	./maketables > $@
+define compile_c
+$(call obj_of,$(1)): $(1) $(HEADERS) | $(OBJDIR)
+	$$(CC) $$(CPPFLAGS) $$(CFLAGS) -c $$< -o $$@
+endef
+define compile_cxx
+$(call obj_of,$(1)): $(1) $(HEADERS) | $(OBJDIR)
+	$$(CXX) $$(CPPFLAGS) $$(CXXFLAGS) -c $$< -o $$@
+endef
 
-# MULTI CPU CORE!
-# Z80EMU - BROKEN
-$(OBJDIR)/z80emu.o: src/cpu/z80emu/z80emu.c src/cpu/z80emu/z80emu.h src/cpu/z80emu/instructions.h src/cpu/z80emu/macros.h src/cpu/z80emu/tables.h
-	$(ZCC) $(CFLAGS) -c $< -o $@
+$(foreach src,$(filter %.c,$(CPUSRC)) $(ZXEMSRC),$(eval $(call compile_c,$(src))))
+$(foreach src,$(filter %.cpp,$(CPUSRC)),$(eval $(call compile_cxx,$(src))))
 
-# MZ80 - Issues on 64bit :(
-$(OBJDIR)/mz80.o: src/cpu/mz80/mz80.c src/cpu/mz80/mz80.h src/cpu/cpuintf.h
-	$(ZCC) $(CFLAGS) -c $< -o $@
+$(OSDOBJ): $(OSD_SOURCE) $(HEADERS) | $(OBJDIR)
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(SDLFLAGS) -c $< -o $@
 
-# DEADZ80 - Dead?
-$(OBJDIR)/deadz80.o: src/cpu/deadz80/deadz80.c src/cpu/deadz80/deadz80.h src/cpu/deadz80/opcodes.h src/cpu/cpuintf.h
-	$(ZCC) $(CFLAGS) -c $< -o $@
+# Link with the C++ driver so the C++ runtime is pulled in for z80core.
+$(TARGET): $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $(OBJECTS) $(OSDLIBS) $(LINKFLAGS) -o $@
 
-# Z80CORE - SUCCESS!
-$(OBJDIR)/z80core_%.o: src/cpu/z80core/%.cpp
-	$(ZCC) $(CFLAGS) -c $< -o $@
+## CPU test suite (exercises the z80emu core, whichever CPU zxem uses)
 
-#$(OBJDIR)/z80core.a: src/cpu/z80core/Z80Core.o src/cpu/z80core/Z80Core_CBOpcodes.o src/cpu/z80core/Z80Core_DDCB_FDCBOpcodes.o src/cpu/z80core/Z80Core_DDOpcodes.o src/cpu/z80core/Z80Core_EDOpcodes.o src/cpu/z80core/Z80Core_FDOpcodes.o src/cpu/z80core/Z80Core_MainOpcodes.o
-#	$(AR) cr $@ src/cpu/z80core/*.o
+$(OBJDIR)/test_z80emu.o: src/cpu/z80emu/z80emu.c $(wildcard src/cpu/z80emu/*.h) | $(OBJDIR)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
-$(OBJDIR)/zxem.o: src/zxem/zxem.c src/zxem/zxem.h src/osdep/osdep.h
-	$(ZCC) $(CFLAGS) $(OSDFLAGS) -c $< -o $@
+$(TEST_TARGET): tests/cputest.c src/cpu/z80emu/z80emu.h $(OBJDIR)/test_z80emu.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< $(OBJDIR)/test_z80emu.o -o $@
 
-$(OBJDIR)/zxvid.o: src/zxem/zxvid.c src/zxem/zxem.h src/osdep/osdep.h
-	$(ZCC) $(CFLAGS) -c $< -o $@
+# The suite stops at the first failure. The z80emu core currently passes the
+# first $(KNOWN_PASSES) tests and fails at cb46 (BIT 0,(HL): undocumented
+# flag bits 3/5 come from MEMPTR, which z80emu does not model). Fail the
+# build if that number goes down, so new regressions are caught.
+KNOWN_PASSES ?= 286
 
-$(OBJDIR)/zxio.o: src/zxem/zxio.c src/zxem/zxem.h src/osdep/osdep.h
-	$(ZCC) $(CFLAGS) -c $< -o $@
+test: $(TEST_TARGET)
+	@(cd tests && ./zxtest > zxtest.log); \
+	  passed=$$(grep -c PASSED tests/zxtest.log); \
+	  echo "cputest: $$passed tests passed (expected at least $(KNOWN_PASSES))"; \
+	  grep -B1 -A15 FAILED tests/zxtest.log | grep -v '^[ 0-9]*M[RW] ' ; \
+	  test $$passed -ge $(KNOWN_PASSES)
 
-$(OBJDIR)/osdep.o: $(OSD_SOURCE) src/zxem/zxem.h src/osdep/osdep.h
-	$(ZCC) $(CFLAGS) $(OSDFLAGS) -c $(OSD_SOURCE) -o $@
+clean:
+	rm -rf obj objhtml $(TARGET) zxem.html zxem.js zxem.data $(TEST_TARGET) tests/zxtest.log
 
-$(OBJDIR)/cpuintf.o: $(CPUINTC) 
-	$(ZCC) $(CFLAGS) -c $< -o $@
-
-OBJECT_FILES = $(OBJDIR)/zxem.o $(CPUOBJ) $(OBJDIR)/zxvid.o $(OBJDIR)/zxio.o $(OBJDIR)/osdep.o $(OBJDIR)/cpuintf.o
-
-$(TARGET): $(OBJECT_FILES)
-	$(ZCC) $(CFLAGS) $(OBJECT_FILES) $(OSDLIBS) $(LINKFLAGS) -o $@
-
-$(TEST_TARGET): tests/cputest.c src/cpu/z80emu/z80emu.h $(OBJDIR)/z80emu.o
-	$(ZCC) $(CFLAGS) $< $(OBJDIR)/z80emu.o  -o $@
-
-
-clean: 
-	rm $(OBJDIR)/*.o 
-	rm $(TARGET)
+.PHONY: all clean test
