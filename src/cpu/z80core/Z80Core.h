@@ -146,7 +146,7 @@ public:
 	typedef struct
 	{
 		void (CZ80Core::*function)(unsigned char opcode);
-		char* format;
+		const char* format;
 	} Z80Opcode;
 
 	typedef struct

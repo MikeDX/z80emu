@@ -1,3 +1,9 @@
 obj
+objhtml
 zxem
+zxem.html
+zxem.js
+zxem.data
 maketables
+tests/zxtest
+tests/zxtest.log
